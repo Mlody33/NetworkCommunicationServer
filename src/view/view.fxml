@@ -9,10 +9,10 @@
 
 <BorderPane xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MainController">
    <center>
-      <TableView prefHeight="373.0" prefWidth="441.0">
+      <TableView fx:id="clientsTableView" prefHeight="373.0" prefWidth="441.0">
          <columns>
-            <TableColumn prefWidth="75.0" text="Name" />
-            <TableColumn prefWidth="75.0" text="Time connection" />
+            <TableColumn fx:id="identyfierColumn" prefWidth="75.0" text="Identyfier" />
+            <TableColumn fx:id="timeConnectionColumn" prefWidth="75.0" text="Time connection" />
          </columns>
          <columnResizePolicy>
             <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
