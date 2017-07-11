@@ -32,9 +32,6 @@ public class MainController implements Initializable{
 	}
 	
 	public void setTable() {
-		LocalDate today = LocalDate.now().plusDays(1);
-		Client client = new Client("id", today);
-		
 		clientsTableView.setItems(main.getConnectedClients());
 	}
 	

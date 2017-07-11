@@ -13,20 +13,24 @@ public class ConnectionThread extends Thread {
 	public void run() {
 		try {
 			serverSocket = new ServerSocket(5588);
+			System.out.println("[S]Opened server socket");
 		} catch (IOException e) {
 			System.err.println("Error while creating socket");
-			closeConnection();
 			e.printStackTrace();
 		}
 		while(true) {
 			
 			try {
 				clientSocket = serverSocket.accept();
+				System.out.println("[S]client socket accepted");
 			} catch (IOException e) {
 				System.err.println("Error while accepting connection");
 				e.printStackTrace();
 				closeConnection();
 			}
+			
+			new ClientControlThread(clientSocket);
+			System.out.println("[S]Connection forwarded to new thread");
 			
 		}
 	}
