@@ -29,7 +29,7 @@ public class ConnectionThread extends Thread {
 				closeConnection();
 			}
 			
-			new ClientControlThread(clientSocket);
+			new ClientControlThread(clientSocket).start();
 			System.out.println("[S]Connection forwarded to new thread");
 			
 		}

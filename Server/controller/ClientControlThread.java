@@ -21,6 +21,7 @@ public class ClientControlThread extends Thread {
 	public void run() {
 		try {
 			incomeClientData = new ObjectInputStream(clientSocket.getInputStream());
+			System.out.println("[S]Created income stream");
 		} catch (IOException e) {
 			System.err.println("Error while creating input stream");
 			e.printStackTrace();
@@ -30,13 +31,14 @@ public class ClientControlThread extends Thread {
 			try {
 				clientData = null;
 				clientData = (Client)incomeClientData.readObject();
+				System.out.println("[S]Data received");
 			} catch (ClassNotFoundException | IOException e) {
 				System.err.println("Error while receiving data");
 				e.printStackTrace();
 				closeConnection();
 			}
 			
-			System.out.println(clientData.toString());
+			System.out.println("Received Data: "+clientData.toString());
 		}
 	}
 	

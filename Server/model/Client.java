@@ -1,13 +1,18 @@
 package model;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.time.LocalDate;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 
-public class Client implements ClientTemplate {
+public class Client implements ClientTemplate, Externalizable {
 
+	private static final long serialVersionUID = 1L;
 	private SimpleStringProperty identyfier;
 	private ObjectProperty<LocalDate> timeConnection;
 	
@@ -43,6 +48,18 @@ public class Client implements ClientTemplate {
 	@Override
 	public String toString() {
 		return "ID: "+identyfier.get()+" TC: "+timeConnection.get();
+	}
+
+	@Override
+	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+		this.identyfier = new SimpleStringProperty(in.readLine());
+		this.timeConnection = new SimpleObjectProperty<LocalDate>(LocalDate.now());//TODO change this to read exact date
+	}
+
+	@Override
+	public void writeExternal(ObjectOutput out) throws IOException {
+		out.writeBytes(getIdentyfier());
+		out.writeBytes(getTimeConnection().toString());
 	}
 
 }
