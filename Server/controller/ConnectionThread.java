@@ -8,30 +8,44 @@ public class ConnectionThread extends Thread {
 	
 	private ServerSocket serverSocket;
 	private Socket clientSocket;
+	private boolean connected = false;
+	private boolean serverStatus;
+	
+	public ConnectionThread(boolean serverStatus) {
+		this.serverStatus = serverStatus;
+	}
+	
+	public void setServerStatus(boolean serverStatus) {
+		this.serverStatus = serverStatus;
+	}
 	
 	@Override
 	public void run() {
 		try {
 			serverSocket = new ServerSocket(5588);
-			System.out.println("[S]Opened server socket");
+			System.out.println("[S1]Opened server socket");
 		} catch (IOException e) {
 			System.err.println("Error while creating socket");
 			e.printStackTrace();
 		}
-		while(true) {
-			
+		while(serverStatus) {
+			System.out.println("WORKING THREAD");
 			try {
 				clientSocket = serverSocket.accept();
-				System.out.println("[S]client socket accepted");
+				connected = true;
+				System.out.println("[S1]client socket accepted");
 			} catch (IOException e) {
 				System.err.println("Error while accepting connection");
-				e.printStackTrace();
+				connected = false;
 				closeConnection();
+				e.printStackTrace();
 			}
 			
-			new ClientControlThread(clientSocket).start();
-			System.out.println("[S]Connection forwarded to new thread");
-			
+			if(connected) {
+				new ClientControlThread(clientSocket, connected, serverStatus).start();
+				System.out.println("[S1]Connection forwarded to new thread");
+				connected = false;
+			}
 		}
 	}
 
