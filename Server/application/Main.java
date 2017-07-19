@@ -27,8 +27,10 @@ public class Main extends Application {
 		
 		try {
 			initMainView();
-		} catch(Exception e) {
+		} catch(IOException e) {
 			e.printStackTrace();
+		} catch(InterruptedException e1) {
+			e1.printStackTrace();
 		}
 	}
 	
@@ -36,7 +38,7 @@ public class Main extends Application {
 		launch(args);
 	}
 	
-	private void initMainView() throws IOException {
+	private void initMainView() throws IOException, InterruptedException {
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(Main.class.getResource("../view/view.fxml"));
 		rootLayout = (BorderPane)loader.load();
