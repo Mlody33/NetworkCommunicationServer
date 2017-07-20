@@ -3,10 +3,10 @@ package controller;
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
-import java.util.Random;
 import java.util.ResourceBundle;
 
 import application.Main;
+import application.StatusTextDB;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -24,14 +24,6 @@ public class MainController implements Initializable{
 	@FXML Button connectionBtn;
 	@FXML Text statusTxt;
 	
-	private static final String ONLINE = "Server is online";
-	private static final String OFFLINE = "Server is offline";
-	private static final String SET_ON = "Switch ON";
-	private static final String SET_OFF = "Switch OFF";
-	
-	private static final int CODE_CONNECTION = new Random().nextInt(8999)+1000;
-	
-	private boolean serverStatus = true;
 	private AcceptanceOfClientsConnection acceptanceOfClientsConnection;
 	private Main main;
 	
@@ -43,9 +35,6 @@ public class MainController implements Initializable{
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		identyfierColumn.setCellValueFactory(new PropertyValueFactory<Client, String>("identyfier"));
 		timeConnectionColumn.setCellValueFactory(new PropertyValueFactory<Client, LocalDate>("timeConnection"));
-		connectionBtn.setText(SET_OFF);
-		
-		statusTxt.setText(ONLINE + " #" + CODE_CONNECTION);
 	}
 	
 	public void setTable() {
@@ -53,26 +42,26 @@ public class MainController implements Initializable{
 	}
 	
 	public void setConnection() throws IOException, InterruptedException {
-		acceptanceOfClientsConnection = new AcceptanceOfClientsConnection(serverStatus);
+		setServerOnline();
+		acceptanceOfClientsConnection = new AcceptanceOfClientsConnection();
+		acceptanceOfClientsConnection.setMain(main);
 		acceptanceOfClientsConnection.start();
 	}
 
 	@FXML public void switchServerConnection() {
-		setServerStatus(!serverStatus);
+		
 	}
 
-	public void setServerStatus(boolean online) {
-		if(online) {
-			serverStatus = true;
-			statusTxt.setText(ONLINE);
-			connectionBtn.setText(SET_OFF);
-		} else {
-			serverStatus = false;
-			statusTxt.setText(OFFLINE);
-			connectionBtn.setText(SET_ON);
-			acceptanceOfClientsConnection.stopThread();
-		}
-		acceptanceOfClientsConnection.setServerStatus(serverStatus);
+	public void setServerOnline() {
+		main.getServerDate().setServerStatusOnline();
+		statusTxt.setText(StatusTextDB.ONLINE.get() + " " + main.getServerDate().getAuthorizationCode());
+		connectionBtn.setText(StatusTextDB.SET_SERVER_OFF.get());
+	}
+
+	public void setServerOffline() {
+		main.getServerDate().setServerStatusOffline();
+		statusTxt.setText(StatusTextDB.OFFLINE.get());
+		connectionBtn.setText(StatusTextDB.SET_SERVER_ON.get());
 	}
 
 }

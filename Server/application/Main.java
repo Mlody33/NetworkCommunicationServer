@@ -11,14 +11,15 @@ import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import model.Client;
+import model.Server;
 
 
 public class Main extends Application {
 	
-	private static final String TITLE = "SERWER";
 	private Stage primaryStage;
 	private BorderPane rootLayout;
 	
+	private Server serverDate = new Server();
 	private ObservableList<Client> connectedClients = FXCollections.observableArrayList();
 
 	@Override
@@ -51,12 +52,16 @@ public class Main extends Application {
 		Scene scene = new Scene(rootLayout);
 		scene.getStylesheets().add(Main.class.getResource("../view/style.css").toExternalForm());
 		primaryStage.setScene(scene);
-		primaryStage.setTitle(TITLE);
+		primaryStage.setTitle(StatusTextDB.TITLE_OF_APP.get());
 		primaryStage.show();
 		
 	}
 
 	public ObservableList<Client> getConnectedClients() {
 		return connectedClients;
+	}
+	
+	public Server getServerDate() {
+		return this.serverDate;
 	}
 }

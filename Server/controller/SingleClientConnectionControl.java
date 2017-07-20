@@ -5,6 +5,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
+import application.Main;
 import model.Client;
 
 public class SingleClientConnectionControl extends Thread {
@@ -14,45 +15,61 @@ public class SingleClientConnectionControl extends Thread {
 	private ObjectInputStream incomeClientData;
 	
 	private Client clientData;
-	private boolean connected;
-	private boolean serverStatus;
+	private Main main;
 	
-	public SingleClientConnectionControl(Socket clientSocket, boolean connected, boolean serverStatus) {
+	public SingleClientConnectionControl(Socket clientSocket) {
 		this.clientSocket = clientSocket;
-		this.connected = connected;
-		this.serverStatus = serverStatus;
 	}
 	
-	public void setServerStatus(boolean serverStatus) {
-		this.serverStatus = serverStatus;
+	public void setMain(Main main) {
+		this.main = main;
 	}
 	
 	@Override
 	public void run() {
 		createInputOutputStream();
-		
-		System.out.println("[S2]WHILE-"+connected+serverStatus);
-		while(connected&serverStatus) {
-			try {
-				clientData = null;
-				clientData = (Client)incomeClientData.readObject();
-				System.out.println("[S2]Data received");
-				System.out.println(clientData.toString());
+		while(main.getServerDate().getServerStatus()) {
+			receiveDataFromClient();
+			checkAuthorization();
+			sendDataToClient();
 				
-				clientData.setAuthorized(true);
-				
-				System.out.println("[S2]Object send");
-				System.out.println(clientData.toString());
-				outcomeClientData.writeObject(clientData);
-				outcomeClientData.flush();
-				
-			} catch (ClassNotFoundException | IOException e) {
-				System.err.println("Error while receiving data");
-				closeConnection();
-				e.printStackTrace();
-			}
 		}
 	}
+
+	private void receiveDataFromClient() {
+		try {
+			clientData = null;
+			clientData = (Client)incomeClientData.readObject();
+			System.out.println("[S2]Data received");
+			System.out.println(clientData.toString());
+		} catch (ClassNotFoundException e) {
+			closeConnection();
+			e.printStackTrace();
+		} catch (IOException e) {
+			closeConnection();
+			e.printStackTrace();
+		}
+	}
+	
+	private void checkAuthorization() {
+		if(clientData.getAuthorizationCode() == main.getServerDate().getAuthorizationCode())
+			clientData.setAuthorized(true);
+		else
+			clientData.setAuthorized(false);
+	}
+	
+	private void sendDataToClient() {
+		try {
+			System.out.println("[S2]Object send");
+			System.out.println(clientData.toString());
+			outcomeClientData.writeObject(clientData);
+			outcomeClientData.flush();
+		} catch (IOException e) {
+			closeConnection();
+			e.printStackTrace();
+		}
+	}
+
 
 	private void createInputOutputStream() {
 		try {
@@ -69,7 +86,7 @@ public class SingleClientConnectionControl extends Thread {
 		try {
 			clientSocket.close();
 			incomeClientData.close();
-			connected = false;
+			outcomeClientData.close();
 		} catch (IOException e) {
 			System.err.println("Error while close connection");
 			e.printStackTrace();
