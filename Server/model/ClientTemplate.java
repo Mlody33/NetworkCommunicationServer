@@ -9,13 +9,15 @@ public interface ClientTemplate extends Serializable {
 	void setClientNumber(int number);
 	
 	boolean isConnected();
-	void setConnected(boolean connected);
+	void setConnected();
+	void setNotConnected();
 	
 	int getAuthorizationCode();
 	void setAuthorizationCode(int number);
 	
 	boolean isAuthorized();
-	void setAuthorized(boolean authorized);
+	void setAuthorized();
+	void setNotAuthorized();
 	
 	LocalDate getTimeConnection();
 	void setTimeConnection(LocalDate timeConnection);

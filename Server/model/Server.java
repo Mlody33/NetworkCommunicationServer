@@ -19,7 +19,7 @@ public class Server {
 		this.serverStatus = false;
 	}
 	
-	public boolean getServerStatus() {
+	public boolean isServerOnline() {
 		return this.serverStatus;
 	}
 	

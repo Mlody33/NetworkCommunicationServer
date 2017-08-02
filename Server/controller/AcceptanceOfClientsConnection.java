@@ -3,11 +3,13 @@ package controller;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.logging.Logger;
 
 import application.Main;
 
 public class AcceptanceOfClientsConnection extends Thread {
 	
+	private Logger log = Logger.getLogger("Server "+this.getClass().getName());
 	private ServerSocket serverSocket;
 	private Socket clientSocket;
 	private Main main;
@@ -19,7 +21,7 @@ public class AcceptanceOfClientsConnection extends Thread {
 	@Override
 	public void run(){
 		createServerSocket();
-		while(main.getServerDate().getServerStatus()) {
+		while(main.getServerDate().isServerOnline()) {
 			if(acceptClientSocket())
 				forwardClientConnectionToNewThread();
 		}
@@ -28,9 +30,9 @@ public class AcceptanceOfClientsConnection extends Thread {
 	private void createServerSocket() {
 		try {
 			serverSocket = new ServerSocket(5588);
-			System.out.println("[S1]Opened server socket");
+			log.info("[S1]Opened server socket");
 		} catch (IOException e) {
-			System.err.println("Error while creating socket");
+			log.warning("Error while creating socket");
 			e.printStackTrace();
 		}
 	}
@@ -38,10 +40,10 @@ public class AcceptanceOfClientsConnection extends Thread {
 	private boolean acceptClientSocket() {
 		try {
 			clientSocket = serverSocket.accept();
-			System.out.println("[S1]client socket accepted");
+			log.info("[S1]client socket accepted");
 			return true;
 		} catch (IOException e) {
-			System.err.println("Error while accepting connection");
+			log.warning("Error while accepting connection");
 			closeConnection();
 			e.printStackTrace();
 			return false;
@@ -52,7 +54,7 @@ public class AcceptanceOfClientsConnection extends Thread {
 		SingleClientConnectionControl singleClientConnectionControl = new SingleClientConnectionControl(clientSocket);
 		singleClientConnectionControl.start();
 		singleClientConnectionControl.setMain(main);
-		System.out.println("[S1]Connection forwarded to new thread");
+		log.info("[S1]Connection forwarded to new thread");
 	}
 
 	private void closeConnection() {
@@ -60,7 +62,7 @@ public class AcceptanceOfClientsConnection extends Thread {
 			serverSocket.close();
 			clientSocket.close();
 		} catch (IOException e) {
-			System.err.println("Error while close connection");
+			log.warning("Error while close connection");
 		}
 	}
 

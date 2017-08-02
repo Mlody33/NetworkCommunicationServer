@@ -60,8 +60,13 @@ public class Client implements ClientTemplate, Externalizable {
 	}
 
 	@Override
-	public void setConnected(boolean connected) {
-		this.connected = new SimpleBooleanProperty(connected);
+	public void setConnected() {
+		this.connected = new SimpleBooleanProperty(true);
+	}
+	
+	@Override
+	public void setNotConnected() {
+		this.connected = new SimpleBooleanProperty(false);
 	}
 
 	@Override
@@ -80,8 +85,13 @@ public class Client implements ClientTemplate, Externalizable {
 	}
 
 	@Override
-	public void setAuthorized(boolean authorized) {
-		this.authorized = new SimpleBooleanProperty(authorized);
+	public void setAuthorized() {
+		this.authorized = new SimpleBooleanProperty(true);
+	}
+	
+	@Override
+	public void setNotAuthorized() {
+		this.authorized = new SimpleBooleanProperty(false);
 	}
 
 	@Override

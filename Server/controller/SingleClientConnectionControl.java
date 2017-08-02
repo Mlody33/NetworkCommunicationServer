@@ -4,12 +4,14 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.logging.Logger;
 
 import application.Main;
 import model.Client;
 
 public class SingleClientConnectionControl extends Thread {
 	
+	private Logger log = Logger.getLogger("Server"+this.getClass().getName());
 	private Socket clientSocket;
 	private ObjectOutputStream outcomeClientData;
 	private ObjectInputStream incomeClientData;
@@ -28,11 +30,10 @@ public class SingleClientConnectionControl extends Thread {
 	@Override
 	public void run() {
 		createInputOutputStream();
-		while(main.getServerDate().getServerStatus()) {
+		while(main.getServerDate().isServerOnline()) {
 			receiveDataFromClient();
 			checkAuthorization();
 			sendDataToClient();
-				
 		}
 	}
 
@@ -40,8 +41,9 @@ public class SingleClientConnectionControl extends Thread {
 		try {
 			clientData = null;
 			clientData = (Client)incomeClientData.readObject();
-			System.out.println("[S2]Data received");
-			System.out.println(clientData.toString());
+			main.getConnectedClients().add(clientData);
+			log.info("[S2]Client Conencted: "+clientData.toString());
+			
 		} catch (ClassNotFoundException e) {
 			closeConnection();
 			e.printStackTrace();
@@ -52,18 +54,17 @@ public class SingleClientConnectionControl extends Thread {
 	}
 	
 	private void checkAuthorization() {
-		if(clientData.getAuthorizationCode() == main.getServerDate().getAuthorizationCode())
-			clientData.setAuthorized(true);
+		if(clientData.isAuthorized() || clientData.getAuthorizationCode() == main.getServerDate().getAuthorizationCode())
+			clientData.setAuthorized();
 		else
-			clientData.setAuthorized(false);
+			clientData.setNotAuthorized();
 	}
 	
 	private void sendDataToClient() {
 		try {
-			System.out.println("[S2]Object send");
-			System.out.println(clientData.toString());
 			outcomeClientData.writeObject(clientData);
 			outcomeClientData.flush();
+			log.info("[S2]Send data: "+clientData.toString());
 		} catch (IOException e) {
 			closeConnection();
 			e.printStackTrace();
@@ -75,9 +76,9 @@ public class SingleClientConnectionControl extends Thread {
 		try {
 			incomeClientData = new ObjectInputStream(clientSocket.getInputStream());
 			outcomeClientData = new ObjectOutputStream(clientSocket.getOutputStream());
-			System.out.println("[S2]Created income and outcome stream");
+			log.info("[S2]Created income and outcome stream");
 		} catch (IOException e) {
-			System.err.println("Error while creating input stream");
+			log.warning("Error while creating input stream");
 			e.printStackTrace();
 		}
 	}
@@ -88,7 +89,7 @@ public class SingleClientConnectionControl extends Thread {
 			incomeClientData.close();
 			outcomeClientData.close();
 		} catch (IOException e) {
-			System.err.println("Error while close connection");
+			log.warning("Error while close connection");
 			e.printStackTrace();
 		}
 	}

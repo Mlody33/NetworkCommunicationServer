@@ -19,7 +19,7 @@ import model.Client;
 public class MainController implements Initializable{
 
 	@FXML TableView<Client> clientsTableView;
-	@FXML TableColumn<Client, String> identyfierColumn;
+	@FXML TableColumn<Client, Integer> identyfierColumn;
 	@FXML TableColumn<Client, LocalDate> timeConnectionColumn;
 	@FXML Button connectionBtn;
 	@FXML Text statusTxt;
@@ -33,7 +33,7 @@ public class MainController implements Initializable{
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		identyfierColumn.setCellValueFactory(new PropertyValueFactory<Client, String>("identyfier"));
+		identyfierColumn.setCellValueFactory(new PropertyValueFactory<Client, Integer>("clientNumber"));
 		timeConnectionColumn.setCellValueFactory(new PropertyValueFactory<Client, LocalDate>("timeConnection"));
 	}
 	
