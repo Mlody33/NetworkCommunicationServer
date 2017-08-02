@@ -14,7 +14,7 @@ import model.Client;
 import model.Server;
 
 
-public class Main extends Application {
+public class ServerMain extends Application {
 	
 	private Stage primaryStage;
 	private BorderPane rootLayout;
@@ -41,7 +41,7 @@ public class Main extends Application {
 	
 	private void initMainView() throws IOException, InterruptedException {
 		FXMLLoader loader = new FXMLLoader();
-		loader.setLocation(Main.class.getResource("../view/view.fxml"));
+		loader.setLocation(ServerMain.class.getResource("../view/ServerView.fxml"));
 		rootLayout = (BorderPane)loader.load();
 		
 		MainController controller = loader.getController();
@@ -50,7 +50,7 @@ public class Main extends Application {
 		controller.setConnection();
 		
 		Scene scene = new Scene(rootLayout);
-		scene.getStylesheets().add(Main.class.getResource("../view/style.css").toExternalForm());
+		scene.getStylesheets().add(ServerMain.class.getResource("../view/style.css").toExternalForm());
 		primaryStage.setScene(scene);
 		primaryStage.setTitle(StatusTextDB.TITLE_OF_APP.get());
 		primaryStage.show();

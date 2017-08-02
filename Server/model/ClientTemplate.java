@@ -21,5 +21,4 @@ public interface ClientTemplate extends Serializable {
 	
 	LocalDate getTimeConnection();
 	void setTimeConnection(LocalDate timeConnection);
-
 }

@@ -6,7 +6,7 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.logging.Logger;
 
-import application.Main;
+import application.ServerMain;
 import model.Client;
 
 public class SingleClientConnectionControl extends Thread {
@@ -17,13 +17,13 @@ public class SingleClientConnectionControl extends Thread {
 	private ObjectInputStream incomeClientData;
 	
 	private Client clientData;
-	private Main main;
+	private ServerMain main;
 	
 	public SingleClientConnectionControl(Socket clientSocket) {
 		this.clientSocket = clientSocket;
 	}
 	
-	public void setMain(Main main) {
+	public void setMain(ServerMain main) {
 		this.main = main;
 	}
 	

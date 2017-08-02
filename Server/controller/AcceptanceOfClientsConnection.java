@@ -5,16 +5,16 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.logging.Logger;
 
-import application.Main;
+import application.ServerMain;
 
 public class AcceptanceOfClientsConnection extends Thread {
 	
 	private Logger log = Logger.getLogger("Server "+this.getClass().getName());
 	private ServerSocket serverSocket;
 	private Socket clientSocket;
-	private Main main;
+	private ServerMain main;
 	
-	public void setMain(Main main) {
+	public void setMain(ServerMain main) {
 		this.main = main;
 	}
 	

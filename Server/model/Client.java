@@ -128,4 +128,19 @@ public class Client implements ClientTemplate, Externalizable {
 		out.writeBytes(getTimeConnection().toString());
 	}
 	
+	/*
+	@Override
+	public boolean equals(Object v) {
+		System.out.println("CHECKING IF OBJECT IS EQUAL TO CLIENT");
+		System.out.println(v.toString());
+		Client client = (Client)v;
+		if(client.clientNumber == this.clientNumber) {
+			System.out.println("YESSSSSSSSSSSSSSSSSSSSSSSSS");
+			return false;
+		} else {
+			System.out.println("NOOOOOOOOOOOOOOOOOOOOOOO");
+			return true;
+		}
+	}
+	*/
 }

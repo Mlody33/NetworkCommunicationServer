@@ -5,7 +5,7 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.util.ResourceBundle;
 
-import application.Main;
+import application.ServerMain;
 import application.StatusTextDB;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -25,9 +25,9 @@ public class MainController implements Initializable{
 	@FXML Text statusTxt;
 	
 	private AcceptanceOfClientsConnection acceptanceOfClientsConnection;
-	private Main main;
+	private ServerMain main;
 	
-	public void setMain(Main main) {
+	public void setMain(ServerMain main) {
 		this.main = main;
 	}
 	
