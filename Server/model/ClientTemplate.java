@@ -2,6 +2,7 @@ package model;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public interface ClientTemplate extends Serializable {
 	
@@ -19,6 +20,6 @@ public interface ClientTemplate extends Serializable {
 	void setAuthorized();
 	void setNotAuthorized();
 	
-	LocalDate getTimeConnection();
-	void setTimeConnection(LocalDate timeConnection);
+	LocalDateTime getTimeConnection();
+	void setTimeConnection(LocalDateTime timeConnection);
 }

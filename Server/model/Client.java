@@ -4,7 +4,7 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -18,14 +18,14 @@ public class Client implements ClientTemplate, Externalizable {
 	private SimpleBooleanProperty connected;
 	private SimpleIntegerProperty authorizationCode;
 	private SimpleBooleanProperty authorized;
-	private ObjectProperty<LocalDate> timeConnection;
+	private ObjectProperty<LocalDateTime> timeConnection;
 	
 	public Client() {
 		this.clientNumber = new SimpleIntegerProperty(0);
 		this.connected = new SimpleBooleanProperty(false);
 		this.authorizationCode = new SimpleIntegerProperty(0);
 		this.authorized = new SimpleBooleanProperty(false);
-		this.timeConnection = new SimpleObjectProperty<LocalDate>(null);
+		this.timeConnection = new SimpleObjectProperty<LocalDateTime>(null);
 	}
 	
 	public Client(int clientNumber) {
@@ -33,15 +33,15 @@ public class Client implements ClientTemplate, Externalizable {
 		this.connected = new SimpleBooleanProperty(false);
 		this.authorizationCode = new SimpleIntegerProperty(0);
 		this.authorized = new SimpleBooleanProperty(false);
-		this.timeConnection = new SimpleObjectProperty<LocalDate>(null);
+		this.timeConnection = new SimpleObjectProperty<LocalDateTime>(null);
 	}
 	
-	public Client (int clientNumber, boolean connected, int authorizationCode, boolean authorized, LocalDate timeConnection) {
+	public Client (int clientNumber, boolean connected, int authorizationCode, boolean authorized, LocalDateTime timeConnection) {
 		this.clientNumber = new SimpleIntegerProperty(clientNumber);
 		this.connected = new SimpleBooleanProperty(connected);
 		this.authorizationCode = new SimpleIntegerProperty(authorizationCode);
 		this.authorized = new SimpleBooleanProperty(authorized);
-		this.timeConnection = new SimpleObjectProperty<LocalDate>(timeConnection);
+		this.timeConnection = new SimpleObjectProperty<LocalDateTime>(timeConnection);
 	}
 	
 	@Override
@@ -95,13 +95,13 @@ public class Client implements ClientTemplate, Externalizable {
 	}
 
 	@Override
-	public LocalDate getTimeConnection() {
+	public LocalDateTime getTimeConnection() {
 		return this.timeConnection.get();
 	}
 
 	@Override
-	public void setTimeConnection(LocalDate timeConnection) {
-		this.timeConnection = new SimpleObjectProperty<LocalDate>(timeConnection);
+	public void setTimeConnection(LocalDateTime timeConnection) {
+		this.timeConnection = new SimpleObjectProperty<LocalDateTime>(timeConnection);
 	}
 	
 	@Override
@@ -116,7 +116,7 @@ public class Client implements ClientTemplate, Externalizable {
 		this.authorizationCode = new SimpleIntegerProperty(in.readInt());
 		this.connected = new SimpleBooleanProperty(in.readBoolean());
 		this.authorized = new SimpleBooleanProperty(in.readBoolean());
-		this.timeConnection = new SimpleObjectProperty<LocalDate>(LocalDate.now());//TODO change this to read exact date
+		this.timeConnection = new SimpleObjectProperty<LocalDateTime>(LocalDateTime.now());//TODO change this to read exact date
 	}
 
 	@Override
@@ -128,19 +128,4 @@ public class Client implements ClientTemplate, Externalizable {
 		out.writeBytes(getTimeConnection().toString());
 	}
 	
-	/*
-	@Override
-	public boolean equals(Object v) {
-		System.out.println("CHECKING IF OBJECT IS EQUAL TO CLIENT");
-		System.out.println(v.toString());
-		Client client = (Client)v;
-		if(client.clientNumber == this.clientNumber) {
-			System.out.println("YESSSSSSSSSSSSSSSSSSSSSSSSS");
-			return false;
-		} else {
-			System.out.println("NOOOOOOOOOOOOOOOOOOOOOOO");
-			return true;
-		}
-	}
-	*/
 }
