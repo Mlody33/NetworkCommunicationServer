@@ -25,7 +25,6 @@ public class ServerMain extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		this.primaryStage = primaryStage;
-		
 		try {
 			initMainView();
 		} catch(IOException e) {
@@ -54,7 +53,6 @@ public class ServerMain extends Application {
 		primaryStage.setScene(scene);
 		primaryStage.setTitle(StatusTextDB.TITLE_OF_APP.get());
 		primaryStage.show();
-		
 	}
 
 	public ObservableList<Client> getConnectedClients() {

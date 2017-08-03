@@ -49,7 +49,8 @@ public class MainController implements Initializable{
 	}
 
 	@FXML public void switchServerConnection() {
-		
+		setServerOffline();
+		acceptanceOfClientsConnection.closeConnection();
 	}
 
 	public void setServerOnline() {
