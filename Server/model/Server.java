@@ -5,10 +5,11 @@ import java.util.Random;
 public class Server {
 	private int AUTHORIZATION_CODE;
 	private boolean serverStatus;
+	//TODO Move here list of connected client
 
 	public Server() {
 		AUTHORIZATION_CODE = new Random().nextInt(8999)+1000;
-		serverStatus = false;
+		setServerStatusOffline();
 	}
 	
 	public void setServerStatusOnline() {
