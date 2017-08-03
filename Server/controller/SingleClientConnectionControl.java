@@ -13,8 +13,8 @@ public class SingleClientConnectionControl extends Thread {
 	
 	private Logger log = Logger.getLogger("Server"+this.getClass().getName());
 	private Socket clientSocket;
-	private ObjectOutputStream outcomeClientData;
-	private ObjectInputStream incomeClientData;
+	private ObjectOutputStream outcomeStream;
+	private ObjectInputStream incomeStream;
 	
 	private Client clientData;
 	private ServerMain main;
@@ -33,6 +33,7 @@ public class SingleClientConnectionControl extends Thread {
 		while(main.getServerDate().isServerOnline()) {
 			receiveDataFromClient();
 			checkAuthorization();
+			checkClientStatuses();
 			sendDataToClient();
 		}
 	}
@@ -40,10 +41,10 @@ public class SingleClientConnectionControl extends Thread {
 	private void receiveDataFromClient() {
 		try {
 			clientData = null;
-			clientData = (Client)incomeClientData.readObject();
-			main.getConnectedClients().add(clientData);
+			clientData = (Client)incomeStream.readObject();
+			if(!clientData.isAuthorized())
+				main.getConnectedClients().add(clientData);
 			log.info("[S2]Client Conencted: "+clientData.toString());
-			
 		} catch (ClassNotFoundException e) {
 			closeConnection();
 			e.printStackTrace();
@@ -60,10 +61,16 @@ public class SingleClientConnectionControl extends Thread {
 			clientData.setNotAuthorized();
 	}
 	
+	private void checkClientStatuses() {
+		if(clientData.getSignalToCommunicationWithServer() == 2) { //FIXME change static int to signal enum
+			System.out.println("USUWAM Z LISTY");
+		}
+	}
+	
 	private void sendDataToClient() {
 		try {
-			outcomeClientData.writeObject(clientData);
-			outcomeClientData.flush();
+			outcomeStream.writeObject(clientData);
+			outcomeStream.flush();
 			log.info("[S2]Send data: "+clientData.toString());
 		} catch (IOException e) {
 			closeConnection();
@@ -74,8 +81,8 @@ public class SingleClientConnectionControl extends Thread {
 
 	private void createInputOutputStream() {
 		try {
-			incomeClientData = new ObjectInputStream(clientSocket.getInputStream());
-			outcomeClientData = new ObjectOutputStream(clientSocket.getOutputStream());
+			incomeStream = new ObjectInputStream(clientSocket.getInputStream());
+			outcomeStream = new ObjectOutputStream(clientSocket.getOutputStream());
 			log.info("[S2]Created income and outcome stream");
 		} catch (IOException e) {
 			log.warning("Error while creating input stream");
@@ -86,8 +93,8 @@ public class SingleClientConnectionControl extends Thread {
 	private void closeConnection() {
 		try {
 			clientSocket.close();
-			incomeClientData.close();
-			outcomeClientData.close();
+			incomeStream.close();
+			outcomeStream.close();
 		} catch (IOException e) {
 			log.warning("Error while close connection");
 			e.printStackTrace();

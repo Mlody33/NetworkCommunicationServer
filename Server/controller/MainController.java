@@ -18,11 +18,11 @@ import model.Client;
 
 public class MainController implements Initializable{
 
-	@FXML TableView<Client> clientsTableView;
-	@FXML TableColumn<Client, Integer> identyfierColumn;
-	@FXML TableColumn<Client, LocalDateTime> timeConnectionColumn;
-	@FXML Button connectionBtn;
-	@FXML Text statusTxt;
+	@FXML private TableView<Client> clientsTableView;
+	@FXML private TableColumn<Client, Integer> identyfierColumn;
+	@FXML private TableColumn<Client, LocalDateTime> timeConnectionColumn;
+	@FXML private Button connectionBtn;
+	@FXML private Text statusTxt;
 	
 	private AcceptanceOfClientsConnection acceptanceOfClientsConnection;
 	private ServerMain main;

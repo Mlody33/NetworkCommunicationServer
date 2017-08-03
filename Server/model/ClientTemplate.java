@@ -1,7 +1,6 @@
 package model;
 
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public interface ClientTemplate extends Serializable {
@@ -19,6 +18,9 @@ public interface ClientTemplate extends Serializable {
 	boolean isAuthorized();
 	void setAuthorized();
 	void setNotAuthorized();
+	
+	int getSignalToCommunicationWithServer();
+	void setSignalToCommunicationWithServer(int signal);
 	
 	LocalDateTime getTimeConnection();
 	void setTimeConnection(LocalDateTime timeConnection);

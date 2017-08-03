@@ -18,6 +18,7 @@ public class Client implements ClientTemplate, Externalizable {
 	private SimpleBooleanProperty connected;
 	private SimpleIntegerProperty authorizationCode;
 	private SimpleBooleanProperty authorized;
+	private SimpleIntegerProperty signalToCommunicationWithServer;
 	private ObjectProperty<LocalDateTime> timeConnection;
 	
 	public Client() {
@@ -25,14 +26,7 @@ public class Client implements ClientTemplate, Externalizable {
 		this.connected = new SimpleBooleanProperty(false);
 		this.authorizationCode = new SimpleIntegerProperty(0);
 		this.authorized = new SimpleBooleanProperty(false);
-		this.timeConnection = new SimpleObjectProperty<LocalDateTime>(null);
-	}
-	
-	public Client(int clientNumber) {
-		this.clientNumber = new SimpleIntegerProperty(clientNumber);
-		this.connected = new SimpleBooleanProperty(false);
-		this.authorizationCode = new SimpleIntegerProperty(0);
-		this.authorized = new SimpleBooleanProperty(false);
+		this.signalToCommunicationWithServer = new SimpleIntegerProperty(0);
 		this.timeConnection = new SimpleObjectProperty<LocalDateTime>(null);
 	}
 	
@@ -41,7 +35,17 @@ public class Client implements ClientTemplate, Externalizable {
 		this.connected = new SimpleBooleanProperty(connected);
 		this.authorizationCode = new SimpleIntegerProperty(authorizationCode);
 		this.authorized = new SimpleBooleanProperty(authorized);
+		this.signalToCommunicationWithServer = new SimpleIntegerProperty(0);
 		this.timeConnection = new SimpleObjectProperty<LocalDateTime>(timeConnection);
+	}
+	
+	public void setClient(Client client) {
+		this.clientNumber = new SimpleIntegerProperty(client.getClientNumber());
+		this.connected = new SimpleBooleanProperty(client.isConnected());
+		this.authorizationCode = new SimpleIntegerProperty(client.getAuthorizationCode());
+		this.authorized = new SimpleBooleanProperty(client.isAuthorized());
+		this.signalToCommunicationWithServer = new SimpleIntegerProperty(client.getSignalToCommunicationWithServer());
+		this.timeConnection = new SimpleObjectProperty<LocalDateTime>(client.getTimeConnection());
 	}
 	
 	@Override
@@ -93,6 +97,16 @@ public class Client implements ClientTemplate, Externalizable {
 	public void setNotAuthorized() {
 		this.authorized = new SimpleBooleanProperty(false);
 	}
+	
+	@Override
+	public int getSignalToCommunicationWithServer() {
+		return this.signalToCommunicationWithServer.get();
+	}
+
+	@Override
+	public void setSignalToCommunicationWithServer(int signal) {
+		this.signalToCommunicationWithServer = new SimpleIntegerProperty(signal);
+	}
 
 	@Override
 	public LocalDateTime getTimeConnection() {
@@ -116,6 +130,7 @@ public class Client implements ClientTemplate, Externalizable {
 		this.authorizationCode = new SimpleIntegerProperty(in.readInt());
 		this.connected = new SimpleBooleanProperty(in.readBoolean());
 		this.authorized = new SimpleBooleanProperty(in.readBoolean());
+		this.signalToCommunicationWithServer = new SimpleIntegerProperty(in.readInt());
 		this.timeConnection = new SimpleObjectProperty<LocalDateTime>(LocalDateTime.now());//TODO change this to read exact date
 	}
 
@@ -125,7 +140,8 @@ public class Client implements ClientTemplate, Externalizable {
 		out.writeInt(getAuthorizationCode());
 		out.writeBoolean(isConnected());
 		out.writeBoolean(isAuthorized());
-		out.writeBytes(getTimeConnection().toString());
+		out.writeInt(getSignalToCommunicationWithServer());
+		out.writeBytes(LocalDateTime.now().toString()); //FIXME send exact date
 	}
-	
+
 }
