@@ -36,20 +36,21 @@ public class SingleClientConnectionControl extends Thread {
 		createInputOutputStream();
 		while(main.getServerDate().isServerOnline() & clientData.isConnected()) {
 			receiveDataFromClient();
-//			checkAuthorization();
-//			checkClientStatuses();
+			checkAuthorization();
+			checkClientStatuses();
 			sendDataToClient();
 		}
 	}
 	
 	private void receiveDataFromClient() {
-		log.warning("_____________________________________________________________________czekam na obiekt");
+		log.warning("_____________________________________________________________________");
+		Client clientDataRead = new Client();
 		try {
-			Client clientDataRead = new Client();
 			clientDataRead = (Client)incomeStream.readObject();
-//			if(!clientData.isAuthorized())
-//				main.getConnectedClients().add(clientData);
-			log.info("[S2]Received client: "+clientDataRead.toString());
+			clientData.setClientData(clientDataRead);
+			if(!clientData.isAuthorized() && clientData.getAuthorizationCode() == main.getServerDate().getAuthorizationCode())
+				main.getConnectedClients().add(clientData);
+			log.info("[S2]Received client: "+clientData.toString());
 		} catch (ClassNotFoundException | IOException e) {
 			closeConnection();
 			e.printStackTrace();
@@ -70,11 +71,11 @@ public class SingleClientConnectionControl extends Thread {
 		}else {
 			System.out.println("Inne");
 		}
-		log.info("chcek client status: " + clientData.toString());
 	}
 	
 	private void sendDataToClient() {
 		Client clientDataWrite = new Client();
+		clientDataWrite.setClientData(clientData);
 		try {
 			outcomeStream.writeObject(clientDataWrite);
 			outcomeStream.flush();
@@ -90,7 +91,6 @@ public class SingleClientConnectionControl extends Thread {
 		try {
 			incomeStream = new ObjectInputStream(clientSocket.getInputStream());
 			outcomeStream = new ObjectOutputStream(clientSocket.getOutputStream());
-//			log.info("[S2]Created income and outcome stream");
 		} catch (IOException e) {
 			log.warning("Error while creating input stream");
 			e.printStackTrace();

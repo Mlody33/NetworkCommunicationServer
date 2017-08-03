@@ -39,7 +39,7 @@ public class Client implements ClientTemplate, Externalizable {
 		this.timeConnection = new SimpleObjectProperty<LocalDateTime>(timeConnection);
 	}
 	
-	public void setClient(Client client) {
+	public void setClientData(Client client) {
 		this.clientNumber = new SimpleIntegerProperty(client.getClientNumber());
 		this.connected = new SimpleBooleanProperty(client.isConnected());
 		this.authorizationCode = new SimpleIntegerProperty(client.getAuthorizationCode());
