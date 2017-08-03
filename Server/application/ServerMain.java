@@ -11,14 +11,15 @@ import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import model.Client;
+import model.Server;
 
 
-public class Main extends Application {
+public class ServerMain extends Application {
 	
-	private static final String TITLE = "SERWER";
 	private Stage primaryStage;
 	private BorderPane rootLayout;
 	
+	private Server serverDate = new Server();
 	private ObservableList<Client> connectedClients = FXCollections.observableArrayList();
 
 	@Override
@@ -27,8 +28,10 @@ public class Main extends Application {
 		
 		try {
 			initMainView();
-		} catch(Exception e) {
+		} catch(IOException e) {
 			e.printStackTrace();
+		} catch(InterruptedException e1) {
+			e1.printStackTrace();
 		}
 	}
 	
@@ -36,9 +39,9 @@ public class Main extends Application {
 		launch(args);
 	}
 	
-	private void initMainView() throws IOException {
+	private void initMainView() throws IOException, InterruptedException {
 		FXMLLoader loader = new FXMLLoader();
-		loader.setLocation(Main.class.getResource("../view/view.fxml"));
+		loader.setLocation(ServerMain.class.getResource("../view/ServerView.fxml"));
 		rootLayout = (BorderPane)loader.load();
 		
 		MainController controller = loader.getController();
@@ -47,14 +50,18 @@ public class Main extends Application {
 		controller.setConnection();
 		
 		Scene scene = new Scene(rootLayout);
-		scene.getStylesheets().add(Main.class.getResource("../view/style.css").toExternalForm());
+		scene.getStylesheets().add(ServerMain.class.getResource("../view/style.css").toExternalForm());
 		primaryStage.setScene(scene);
-		primaryStage.setTitle(TITLE);
+		primaryStage.setTitle(StatusTextDB.TITLE_OF_APP.get());
 		primaryStage.show();
 		
 	}
 
 	public ObservableList<Client> getConnectedClients() {
 		return connectedClients;
+	}
+	
+	public Server getServerDate() {
+		return this.serverDate;
 	}
 }

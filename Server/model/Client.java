@@ -1,48 +1,147 @@
 package model;
 
-import java.time.LocalDate;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.time.LocalDateTime;
 
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
 
-public class Client implements ClientTemplate {
+public class Client implements ClientTemplate, Externalizable {
 
-	private SimpleStringProperty identyfier;
-	private ObjectProperty<LocalDate> timeConnection;
+	private static final long serialVersionUID = 1L;
+	private SimpleIntegerProperty clientNumber;
+	private SimpleBooleanProperty connected;
+	private SimpleIntegerProperty authorizationCode;
+	private SimpleBooleanProperty authorized;
+	private SimpleIntegerProperty signalToCommunicationWithServer;
+	private ObjectProperty<LocalDateTime> timeConnection;
 	
 	public Client() {
-		this.identyfier = new SimpleStringProperty(null);
-		this.timeConnection = new SimpleObjectProperty<LocalDate>(null);
+		this.clientNumber = new SimpleIntegerProperty(0);
+		this.connected = new SimpleBooleanProperty(false);
+		this.authorizationCode = new SimpleIntegerProperty(0);
+		this.authorized = new SimpleBooleanProperty(false);
+		this.signalToCommunicationWithServer = new SimpleIntegerProperty(0);
+		this.timeConnection = new SimpleObjectProperty<LocalDateTime>(null);
 	}
 	
-	public Client (String identyfier, LocalDate timeConnection) {
-		this.identyfier = new SimpleStringProperty(identyfier);
-		this.timeConnection = new SimpleObjectProperty<LocalDate>(timeConnection);
+	public Client (int clientNumber, boolean connected, int authorizationCode, boolean authorized, LocalDateTime timeConnection) {
+		this.clientNumber = new SimpleIntegerProperty(clientNumber);
+		this.connected = new SimpleBooleanProperty(connected);
+		this.authorizationCode = new SimpleIntegerProperty(authorizationCode);
+		this.authorized = new SimpleBooleanProperty(authorized);
+		this.signalToCommunicationWithServer = new SimpleIntegerProperty(0);
+		this.timeConnection = new SimpleObjectProperty<LocalDateTime>(timeConnection);
+	}
+	
+	public void setClient(Client client) {
+		this.clientNumber = new SimpleIntegerProperty(client.getClientNumber());
+		this.connected = new SimpleBooleanProperty(client.isConnected());
+		this.authorizationCode = new SimpleIntegerProperty(client.getAuthorizationCode());
+		this.authorized = new SimpleBooleanProperty(client.isAuthorized());
+		this.signalToCommunicationWithServer = new SimpleIntegerProperty(client.getSignalToCommunicationWithServer());
+		this.timeConnection = new SimpleObjectProperty<LocalDateTime>(client.getTimeConnection());
 	}
 	
 	@Override
-	public String getIdentyfier() {
-		return identyfier.get();
-	}
-	@Override
-	public void setIdentyfier(String identyfier) {
-		this.identyfier = new SimpleStringProperty(identyfier);
+	public int getClientNumber() {
+		return this.clientNumber.get();
 	}
 
 	@Override
-	public LocalDate getTimeConnection() {
-		return timeConnection.get();
+	public void setClientNumber(int number) {
+		this.clientNumber = new SimpleIntegerProperty(number);
 	}
+
 	@Override
-	public void setTimeConnection(LocalDate timeConnection) {
-		this.timeConnection = new SimpleObjectProperty<LocalDate>(timeConnection);
+	public boolean isConnected() {
+		return this.connected.get();
+	}
+
+	@Override
+	public void setConnected() {
+		this.connected = new SimpleBooleanProperty(true);
 	}
 	
+	@Override
+	public void setNotConnected() {
+		this.connected = new SimpleBooleanProperty(false);
+	}
+
+	@Override
+	public int getAuthorizationCode() {
+		return this.authorizationCode.get();
+	}
+
+	@Override
+	public void setAuthorizationCode(int number) {
+		this.authorizationCode = new SimpleIntegerProperty(number);
+	}
+
+	@Override
+	public boolean isAuthorized() {
+		return this.authorized.get();
+	}
+
+	@Override
+	public void setAuthorized() {
+		this.authorized = new SimpleBooleanProperty(true);
+	}
+	
+	@Override
+	public void setNotAuthorized() {
+		this.authorized = new SimpleBooleanProperty(false);
+	}
+	
+	@Override
+	public int getSignalToCommunicationWithServer() {
+		return this.signalToCommunicationWithServer.get();
+	}
+
+	@Override
+	public void setSignalToCommunicationWithServer(int signal) {
+		this.signalToCommunicationWithServer = new SimpleIntegerProperty(signal);
+	}
+
+	@Override
+	public LocalDateTime getTimeConnection() {
+		return this.timeConnection.get();
+	}
+
+	@Override
+	public void setTimeConnection(LocalDateTime timeConnection) {
+		this.timeConnection = new SimpleObjectProperty<LocalDateTime>(timeConnection);
+	}
 	
 	@Override
 	public String toString() {
-		return "ID: "+identyfier.get()+" TC: "+timeConnection.get();
+		return "Client [clientNumber=" + clientNumber + ", connected=" + connected + ", authorizationCode="
+				+ authorizationCode + ", authorized=" + authorized + ", timeConnection=" + timeConnection + "]";
+	}
+
+	@Override
+	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+		this.clientNumber = new SimpleIntegerProperty(in.readInt());
+		this.authorizationCode = new SimpleIntegerProperty(in.readInt());
+		this.connected = new SimpleBooleanProperty(in.readBoolean());
+		this.authorized = new SimpleBooleanProperty(in.readBoolean());
+		this.signalToCommunicationWithServer = new SimpleIntegerProperty(in.readInt());
+		this.timeConnection = new SimpleObjectProperty<LocalDateTime>(LocalDateTime.now());//TODO change this to read exact date
+	}
+
+	@Override
+	public void writeExternal(ObjectOutput out) throws IOException {
+		out.writeInt(getClientNumber());
+		out.writeInt(getAuthorizationCode());
+		out.writeBoolean(isConnected());
+		out.writeBoolean(isAuthorized());
+		out.writeInt(getSignalToCommunicationWithServer());
+		out.writeBytes(LocalDateTime.now().toString()); //FIXME send exact date
 	}
 
 }

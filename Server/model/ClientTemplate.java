@@ -1,12 +1,27 @@
 package model;
 
-import java.time.LocalDate;
+import java.io.Serializable;
+import java.time.LocalDateTime;
 
-public interface ClientTemplate {
+public interface ClientTemplate extends Serializable {
 	
-	String getIdentyfier();
-	void setIdentyfier(String identyfier);
-	LocalDate getTimeConnection();
-	void setTimeConnection(LocalDate timeConnection);
-
+	int getClientNumber();
+	void setClientNumber(int number);
+	
+	boolean isConnected();
+	void setConnected();
+	void setNotConnected();
+	
+	int getAuthorizationCode();
+	void setAuthorizationCode(int number);
+	
+	boolean isAuthorized();
+	void setAuthorized();
+	void setNotAuthorized();
+	
+	int getSignalToCommunicationWithServer();
+	void setSignalToCommunicationWithServer(int signal);
+	
+	LocalDateTime getTimeConnection();
+	void setTimeConnection(LocalDateTime timeConnection);
 }
