@@ -128,22 +128,22 @@ public class Client implements ClientTemplate, Externalizable {
 
 	@Override
 	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-//		this.clientNumber = new SimpleIntegerProperty(in.readInt());
+		this.clientNumber = new SimpleIntegerProperty(in.readInt());
 		this.authorizationCode = new SimpleIntegerProperty(in.readInt());
-//		this.connected = new SimpleBooleanProperty(in.readBoolean());
-//		this.authorized = new SimpleBooleanProperty(in.readBoolean());
-//		this.signalToCommunicationWithServer = new SimpleIntegerProperty(in.readInt());
-//		this.timeConnection = new SimpleObjectProperty<LocalDateTime>(LocalDateTime.now());//TODO change this to read exact date
+		this.connected = new SimpleBooleanProperty(in.readBoolean());
+		this.authorized = new SimpleBooleanProperty(in.readBoolean());
+		this.signalToCommunicationWithServer = new SimpleIntegerProperty(in.readInt());
+		this.timeConnection = new SimpleObjectProperty<LocalDateTime>(LocalDateTime.now());//TODO change this to read exact date
 	}
 
 	@Override
 	public void writeExternal(ObjectOutput out) throws IOException {
-//		out.writeInt(getClientNumber());
+		out.writeInt(getClientNumber());
 		out.writeInt(getAuthorizationCode());
-//		out.writeBoolean(isConnected());
-//		out.writeBoolean(isAuthorized());
-//		out.writeInt(getSignalToCommunicationWithServer());
-//		out.writeBytes(LocalDateTime.now().toString()); //FIXME send exact date
+		out.writeBoolean(isConnected());
+		out.writeBoolean(isAuthorized());
+		out.writeInt(getSignalToCommunicationWithServer());
+		out.writeBytes(LocalDateTime.now().toString()); //FIXME send exact date
 	}
 
 }

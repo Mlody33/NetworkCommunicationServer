@@ -36,7 +36,7 @@ public class SingleClientConnectionControl extends Thread {
 		createInputOutputStream();
 		while(main.getServerDate().isServerOnline() & clientData.isConnected()) {
 			receiveDataFromClient();
-			checkAuthorization();
+//			checkAuthorization();
 //			checkClientStatuses();
 			sendDataToClient();
 		}
@@ -45,11 +45,11 @@ public class SingleClientConnectionControl extends Thread {
 	private void receiveDataFromClient() {
 		log.warning("_____________________________________________________________________czekam na obiekt");
 		try {
-			clientData = null;
-			clientData = (Client)incomeStream.readObject();
-			if(!clientData.isAuthorized())
-				main.getConnectedClients().add(clientData);
-			log.info("[S2]Received client: "+clientData.toString());
+			Client clientDataRead = new Client();
+			clientDataRead = (Client)incomeStream.readObject();
+//			if(!clientData.isAuthorized())
+//				main.getConnectedClients().add(clientData);
+			log.info("[S2]Received client: "+clientDataRead.toString());
 		} catch (ClassNotFoundException | IOException e) {
 			closeConnection();
 			e.printStackTrace();
@@ -74,10 +74,11 @@ public class SingleClientConnectionControl extends Thread {
 	}
 	
 	private void sendDataToClient() {
+		Client clientDataWrite = new Client();
 		try {
-			outcomeStream.writeObject(clientData);
+			outcomeStream.writeObject(clientDataWrite);
 			outcomeStream.flush();
-			log.info("[S2]Send client: "+clientData.toString());
+			log.info("[S2]Send client: "+clientDataWrite.toString());
 		} catch (IOException e) {
 			closeConnection();
 			e.printStackTrace();
