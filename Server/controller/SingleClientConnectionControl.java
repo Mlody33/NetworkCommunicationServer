@@ -35,19 +35,19 @@ public class SingleClientConnectionControl extends Thread {
 	public void run() {
 		createInputOutputStream();
 		while(main.getServerDate().isServerOnline() & clientData.isConnected()) {
-			receiveDataFromClient();
+			readDataFromClient();
 			checkAuthorization();
 			checkClientStatuses();
 			sendDataToClient();
+			log.warning("_____________________________________________________________________");
 		}
 	}
 	
-	private void receiveDataFromClient() {
-		log.warning("_____________________________________________________________________");
-		Client clientDataRead = new Client();
+	private void readDataFromClient() {
+		Client clientDataToRead = new Client();
 		try {
-			clientDataRead = (Client)incomeStream.readObject();
-			clientData.setClientData(clientDataRead);
+			clientDataToRead = (Client)incomeStream.readObject();
+			clientData.setClientData(clientDataToRead);
 			if(!clientData.isAuthorized() && clientData.getAuthorizationCode() == main.getServerDate().getAuthorizationCode())
 				main.getConnectedClients().add(clientData);
 			log.info("[S2]Received client: "+clientData.toString());
@@ -65,27 +65,41 @@ public class SingleClientConnectionControl extends Thread {
 		log.info("check authorization: " + clientData.toString());
 	}
 	
-	private void checkClientStatuses() {
-		if(clientData.getSignalToCommunicationWithServer() == 2) { //FIXME change static int to signal enum
+	private void checkClientStatuses() { //FIXME eliminate switch statement
+		switch(clientData.getSignalToCommunicationWithServer()) {
+		case 1:
+			log.warning("SIGNAL 1");
+			break;
+		case 2:
 			System.out.println("USUWAM Z LISTY");
-		}else {
-			System.out.println("Inne");
+			main.getConnectedClients().remove(clientData);
+			clientData.setNotConnected();
+			clientData.setNotAuthorized();
+			break;
+		case 3:
+			log.warning("SIGNAL 3");
+			break;
+		case 4:
+			log.warning("SIGNAL 4");
+			break;
+			default:
+				log.info("OTHER SIGNAL MESSAGE");
+				break;
 		}
 	}
 	
 	private void sendDataToClient() {
-		Client clientDataWrite = new Client();
-		clientDataWrite.setClientData(clientData);
+		Client clientDataToSend = new Client();
+		clientDataToSend.setClientData(clientData);
 		try {
-			outcomeStream.writeObject(clientDataWrite);
+			outcomeStream.writeObject(clientDataToSend);
 			outcomeStream.flush();
-			log.info("[S2]Send client: "+clientDataWrite.toString());
+			log.info("[S2]Send client: "+clientDataToSend.toString());
 		} catch (IOException e) {
 			closeConnection();
 			e.printStackTrace();
 		}
 	}
-
 
 	private void createInputOutputStream() {
 		try {
@@ -102,6 +116,7 @@ public class SingleClientConnectionControl extends Thread {
 			clientSocket.close();
 			incomeStream.close();
 			outcomeStream.close();
+//			Thread.currentThread().interrupt();
 		} catch (IOException e) {
 			log.warning("Error while close connection");
 			e.printStackTrace();

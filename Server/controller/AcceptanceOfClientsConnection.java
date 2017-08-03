@@ -25,6 +25,7 @@ public class AcceptanceOfClientsConnection extends Thread {
 			if(acceptClientSocket())
 				forwardClientConnectionToNewThread();
 		}
+		log.warning("OUT OF LOOP");
 	}
 
 	private void createServerSocket() {
@@ -55,7 +56,7 @@ public class AcceptanceOfClientsConnection extends Thread {
 		singleClientConnectionControl.setMain(main);
 	}
 
-	private void closeConnection() {
+	public void closeConnection() {
 		try {
 			serverSocket.close();
 			clientSocket.close();
@@ -63,5 +64,4 @@ public class AcceptanceOfClientsConnection extends Thread {
 			log.warning("Error while close connection");
 		}
 	}
-
 }
