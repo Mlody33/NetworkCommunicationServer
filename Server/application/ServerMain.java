@@ -53,6 +53,7 @@ public class ServerMain extends Application {
 		scene.getStylesheets().add(ServerMain.class.getResource("../view/style.css").toExternalForm());
 		primaryStage.setScene(scene);
 		primaryStage.setTitle(StatusTextDB.TITLE_OF_APP.get());
+		primaryStage.setAlwaysOnTop(true);
 		primaryStage.show();
 		
 	}

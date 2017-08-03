@@ -37,15 +37,19 @@ public class SingleClientConnectionControl extends Thread {
 		createInputOutputStream();
 		while(main.getServerDate().isServerOnline()) {
 			
-			TestCom testCom = null;
+			Client testCom = new Client();
 			try {
 				log.warning("_____________________________________________________________________czekam na obiekt");
-				testCom = (TestCom)incomeStream.readObject();
+				testCom = (Client)incomeStream.readObject();
 				log.info("[S2]Received client: "+testCom.toString());
 			} catch (ClassNotFoundException | IOException e) {
 				closeConnection();
 				e.printStackTrace();
 			}
+			
+			testCom.setClientNumber(testCom.getClientNumber()+1000);
+			testCom.setAuthorized();
+			testCom.setConnected();
 			
 			try {
 				outcomeStream.writeObject(testCom);
@@ -58,47 +62,11 @@ public class SingleClientConnectionControl extends Thread {
 			
 		}
 	}
-	
-	private void receiveDataFromClient() {
-		log.warning("_____________________________________________________________________czekam na obiekt");
-		
-		
-	}
-	
-	private void checkAuthorization() {
-		if(clientData.isAuthorized() || clientData.getAuthorizationCode() == main.getServerDate().getAuthorizationCode())
-			clientData.setAuthorized();
-		else
-			clientData.setNotAuthorized();
-		log.info("check authorization: " + clientData.toString());
-	}
-	
-	private void checkClientStatuses() {
-		if(clientData.getSignalToCommunicationWithServer() == 2) { //FIXME change static int to signal enum
-			System.out.println("USUWAM Z LISTY");
-		}else {
-			System.out.println("Inne");
-		}
-		log.info("chcek client status: " + clientData.toString());
-	}
-	
-	private void sendDataToClient() {
-		try {
-			outcomeStream.writeObject(clientData);
-			outcomeStream.flush();
-			log.info("[S2]Send client: "+clientData.toString());
-		} catch (IOException e) {
-			closeConnection();
-			e.printStackTrace();
-		}
-	}
-
 
 	private void createInputOutputStream() {
 		try {
 			incomeStream = new ObjectInputStream(clientSocket.getInputStream());
 			outcomeStream = new ObjectOutputStream(clientSocket.getOutputStream());
-//			log.info("[S2]Created income and outcome stream");
 		} catch (IOException e) {
 			log.warning("Error while creating input stream");
 			e.printStackTrace();
