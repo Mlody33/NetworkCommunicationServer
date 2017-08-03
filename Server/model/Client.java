@@ -96,6 +96,7 @@ public class Client implements ClientTemplate, Externalizable {
 	@Override
 	public void setNotAuthorized() {
 		this.authorized = new SimpleBooleanProperty(false);
+		setAuthorizationCode(0);
 	}
 	
 	@Override
@@ -121,7 +122,8 @@ public class Client implements ClientTemplate, Externalizable {
 	@Override
 	public String toString() {
 		return "Client [clientNumber=" + clientNumber + ", connected=" + connected + ", authorizationCode="
-				+ authorizationCode + ", authorized=" + authorized + ", timeConnection=" + timeConnection + "]";
+				+ authorizationCode + ", authorized=" + authorized + ", signalToCommunicationWithServer="
+				+ signalToCommunicationWithServer + ", timeConnection=" + timeConnection + "]";
 	}
 
 	@Override

@@ -30,7 +30,7 @@ public class AcceptanceOfClientsConnection extends Thread {
 	private void createServerSocket() {
 		try {
 			serverSocket = new ServerSocket(5588);
-			log.info("[S1]Opened server socket");
+//			log.info("[S1]Opened server socket");
 		} catch (IOException e) {
 			log.warning("Error while creating socket");
 			e.printStackTrace();
@@ -40,7 +40,7 @@ public class AcceptanceOfClientsConnection extends Thread {
 	private boolean acceptClientSocket() {
 		try {
 			clientSocket = serverSocket.accept();
-			log.info("[S1]client socket accepted");
+//			log.info("[S1]client socket accepted");
 			return true;
 		} catch (IOException e) {
 			log.warning("Error while accepting connection");
@@ -52,9 +52,10 @@ public class AcceptanceOfClientsConnection extends Thread {
 	
 	private void forwardClientConnectionToNewThread() {
 		SingleClientConnectionControl singleClientConnectionControl = new SingleClientConnectionControl(clientSocket);
+		singleClientConnectionControl.setClientStatusConnected();
 		singleClientConnectionControl.start();
 		singleClientConnectionControl.setMain(main);
-		log.info("[S1]Connection forwarded to new thread");
+//		log.info("[S1]Connection forwarded to new thread");
 	}
 
 	private void closeConnection() {

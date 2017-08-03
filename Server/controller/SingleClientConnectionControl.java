@@ -16,7 +16,7 @@ public class SingleClientConnectionControl extends Thread {
 	private ObjectOutputStream outcomeStream;
 	private ObjectInputStream incomeStream;
 	
-	private Client clientData;
+	private Client clientData = new Client();
 	private ServerMain main;
 	
 	public SingleClientConnectionControl(Socket clientSocket) {
@@ -27,28 +27,30 @@ public class SingleClientConnectionControl extends Thread {
 		this.main = main;
 	}
 	
+	public void setClientStatusConnected() {
+		clientData.setConnected();
+	}
+	
 	@Override
 	public void run() {
 		createInputOutputStream();
-		while(main.getServerDate().isServerOnline()) {
+		while(main.getServerDate().isServerOnline() & clientData.isConnected()) {
 			receiveDataFromClient();
 			checkAuthorization();
-			checkClientStatuses();
+//			checkClientStatuses();
 			sendDataToClient();
 		}
 	}
-
+	
 	private void receiveDataFromClient() {
+		log.warning("_____________________________________________________________________czekam na obiekt");
 		try {
 			clientData = null;
 			clientData = (Client)incomeStream.readObject();
 			if(!clientData.isAuthorized())
 				main.getConnectedClients().add(clientData);
-			log.info("[S2]Client Conencted: "+clientData.toString());
-		} catch (ClassNotFoundException e) {
-			closeConnection();
-			e.printStackTrace();
-		} catch (IOException e) {
+			log.info("[S2]Received client: "+clientData.toString());
+		} catch (ClassNotFoundException | IOException e) {
 			closeConnection();
 			e.printStackTrace();
 		}
@@ -59,19 +61,23 @@ public class SingleClientConnectionControl extends Thread {
 			clientData.setAuthorized();
 		else
 			clientData.setNotAuthorized();
+		log.info("check authorization: " + clientData.toString());
 	}
 	
 	private void checkClientStatuses() {
 		if(clientData.getSignalToCommunicationWithServer() == 2) { //FIXME change static int to signal enum
 			System.out.println("USUWAM Z LISTY");
+		}else {
+			System.out.println("Inne");
 		}
+		log.info("chcek client status: " + clientData.toString());
 	}
 	
 	private void sendDataToClient() {
 		try {
 			outcomeStream.writeObject(clientData);
 			outcomeStream.flush();
-			log.info("[S2]Send data: "+clientData.toString());
+			log.info("[S2]Send client: "+clientData.toString());
 		} catch (IOException e) {
 			closeConnection();
 			e.printStackTrace();
@@ -83,7 +89,7 @@ public class SingleClientConnectionControl extends Thread {
 		try {
 			incomeStream = new ObjectInputStream(clientSocket.getInputStream());
 			outcomeStream = new ObjectOutputStream(clientSocket.getOutputStream());
-			log.info("[S2]Created income and outcome stream");
+//			log.info("[S2]Created income and outcome stream");
 		} catch (IOException e) {
 			log.warning("Error while creating input stream");
 			e.printStackTrace();
