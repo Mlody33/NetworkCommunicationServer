@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 
 import application.ServerMain;
 import model.Client;
+import model.TestCom;
 
 public class SingleClientConnectionControl extends Thread {
 	
@@ -34,26 +35,34 @@ public class SingleClientConnectionControl extends Thread {
 	@Override
 	public void run() {
 		createInputOutputStream();
-		while(main.getServerDate().isServerOnline() & clientData.isConnected()) {
-			receiveDataFromClient();
-			checkAuthorization();
-//			checkClientStatuses();
-			sendDataToClient();
+		while(main.getServerDate().isServerOnline()) {
+			
+			TestCom testCom = null;
+			try {
+				log.warning("_____________________________________________________________________czekam na obiekt");
+				testCom = (TestCom)incomeStream.readObject();
+				log.info("[S2]Received client: "+testCom.toString());
+			} catch (ClassNotFoundException | IOException e) {
+				closeConnection();
+				e.printStackTrace();
+			}
+			
+			try {
+				outcomeStream.writeObject(testCom);
+				outcomeStream.flush();
+				log.info("[S2]Send client: "+testCom.toString());
+			} catch (IOException e) {
+				closeConnection();
+				e.printStackTrace();
+			}
+			
 		}
 	}
 	
 	private void receiveDataFromClient() {
 		log.warning("_____________________________________________________________________czekam na obiekt");
-		try {
-			clientData = null;
-			clientData = (Client)incomeStream.readObject();
-			if(!clientData.isAuthorized())
-				main.getConnectedClients().add(clientData);
-			log.info("[S2]Received client: "+clientData.toString());
-		} catch (ClassNotFoundException | IOException e) {
-			closeConnection();
-			e.printStackTrace();
-		}
+		
+		
 	}
 	
 	private void checkAuthorization() {
