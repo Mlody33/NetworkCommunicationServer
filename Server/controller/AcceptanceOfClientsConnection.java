@@ -43,7 +43,6 @@ public class AcceptanceOfClientsConnection extends Thread {
 			return true;
 		} catch (IOException e) {
 			log.warning("Error while accepting connection");
-			closeConnection();
 			e.printStackTrace();
 			return false;
 		}
@@ -52,14 +51,13 @@ public class AcceptanceOfClientsConnection extends Thread {
 	private void forwardClientConnectionToNewThread() {
 		SingleClientConnectionControl singleClientConnectionControl = new SingleClientConnectionControl(clientSocket);
 		singleClientConnectionControl.setClientStatusConnected();
-		singleClientConnectionControl.start();
 		singleClientConnectionControl.setMain(main);
+		singleClientConnectionControl.start();
 	}
 
 	public void closeConnection() {
 		try {
 			serverSocket.close();
-			clientSocket.close();
 		} catch (IOException e) {
 			log.warning("Error while close connection");
 		}

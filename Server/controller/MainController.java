@@ -48,9 +48,14 @@ public class MainController implements Initializable{
 		acceptanceOfClientsConnection.start();
 	}
 
-	@FXML public void switchServerConnection() {
-		setServerOffline();
-		acceptanceOfClientsConnection.closeConnection();
+	@FXML public void switchServerConnection() throws IOException, InterruptedException {
+		if(main.getServerDate().isServerOnline()) {
+			setServerOffline();
+			acceptanceOfClientsConnection.closeConnection();
+		} else {
+			main.getServerDate().generateAuthorizationCode();
+			setConnection();
+		}
 	}
 
 	public void setServerOnline() {

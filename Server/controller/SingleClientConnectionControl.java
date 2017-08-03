@@ -37,7 +37,7 @@ public class SingleClientConnectionControl extends Thread {
 		while(main.getServerDate().isServerOnline() & clientData.isConnected()) {
 			readDataFromClient();
 			checkAuthorization();
-			checkClientStatuses();
+			checkClientStatuse();
 			sendDataToClient();
 			log.warning("_____________________________________________________________________");
 		}
@@ -65,7 +65,7 @@ public class SingleClientConnectionControl extends Thread {
 		log.info("check authorization: " + clientData.toString());
 	}
 	
-	private void checkClientStatuses() { //FIXME eliminate switch statement
+	private void checkClientStatuse() { //FIXME eliminate switch statement
 		switch(clientData.getSignalToCommunicationWithServer()) {
 		case 1:
 			log.warning("SIGNAL 1");
@@ -78,6 +78,7 @@ public class SingleClientConnectionControl extends Thread {
 			break;
 		case 3:
 			log.warning("SIGNAL 3");
+			//TODO checkAuthorization()
 			break;
 		case 4:
 			log.warning("SIGNAL 4");
@@ -116,7 +117,6 @@ public class SingleClientConnectionControl extends Thread {
 			clientSocket.close();
 			incomeStream.close();
 			outcomeStream.close();
-//			Thread.currentThread().interrupt();
 		} catch (IOException e) {
 			log.warning("Error while close connection");
 			e.printStackTrace();

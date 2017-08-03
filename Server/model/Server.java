@@ -12,6 +12,10 @@ public class Server {
 		setServerStatusOffline();
 	}
 	
+	public void generateAuthorizationCode() {
+		AUTHORIZATION_CODE = new Random().nextInt(8999)+1000;
+	}
+	
 	public void setServerStatusOnline() {
 		this.serverStatus = true;
 	}
