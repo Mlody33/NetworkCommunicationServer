@@ -114,8 +114,7 @@ public class SingleClientConnectionControl extends Thread {
 	private void checkAuthorization() {
 		if(clientData.getAuthorizationCode() == main.getServerDate().getAuthorizationCode()) {
 			clientData.setAuthorized();
-			int clientIndex = main.getConnectedClients().indexOf(clientData);
-			main.getConnectedClients().set(clientIndex, clientData);
+			updateClientDataInTable();
 		} else {
 			clientData.setNotAuthorized();
 		}
@@ -124,7 +123,12 @@ public class SingleClientConnectionControl extends Thread {
 	
 	
 	private void updateConnection() {
-		
+		updateClientDataInTable();
+	}
+
+	private void updateClientDataInTable() {
+		int clientIndex = main.getConnectedClients().indexOf(clientData);
+		main.getConnectedClients().set(clientIndex, clientData);
 	}
 	
 	private void closeConnection() {

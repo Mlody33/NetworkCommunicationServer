@@ -11,7 +11,7 @@
 
 <BorderPane xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MainController">
    <center>
-      <TableView fx:id="clientsTableView" BorderPane.alignment="CENTER">
+      <TableView fx:id="clientsTableView" prefWidth="550.0" BorderPane.alignment="CENTER">
          <columns>
             <TableColumn fx:id="identyfierColumn" maxWidth="120.0" minWidth="100.0" prefWidth="100.0" text="Identyfier" />
             <TableColumn fx:id="authorizationColumn" maxWidth="130.0" minWidth="110.0" prefWidth="110.0" text="Authorization" />

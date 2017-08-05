@@ -7,7 +7,7 @@ import java.util.logging.Logger;
 
 import application.ServerMain;
 
-public class AcceptanceOfClientsConnection extends Thread {
+public class AcceptanceOfClientsConnection extends Thread { //TODO implements Runnable instead extend Thread
 	
 	private Logger log = Logger.getLogger("Server "+this.getClass().getName());
 	private ServerSocket serverSocket;
