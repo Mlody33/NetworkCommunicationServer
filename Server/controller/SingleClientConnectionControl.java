@@ -79,19 +79,19 @@ public class SingleClientConnectionControl extends Thread {
 	
 	private void checkClientStatus() { //FIXME eliminate switch statement
 		switch(clientData.getSignalToCommunicationWithServer()) {
-		case 1:
+		case CONNECT:
 			log.warning("SIGNAL 1");
 			connectClient();
 			break;
-		case 2:
+		case DISCONNECT:
 			log.warning("SIGNAL 2");
 			disconnectClient();
 			break;
-		case 3:
+		case AUTHORIZE:
 			log.warning("SIGNAL 3");
 			checkAuthorization();
 			break;
-		case 4:
+		case UPDATE:
 			log.warning("SIGNAL 4");
 			updateConnection();
 		default:

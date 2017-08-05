@@ -3,6 +3,8 @@ package model;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+import controller.Signal;
+
 public interface ClientTemplate extends Serializable {
 	
 	int getClientNumber();
@@ -19,8 +21,8 @@ public interface ClientTemplate extends Serializable {
 	void setAuthorized();
 	void setNotAuthorized();
 	
-	int getSignalToCommunicationWithServer();
-	void setSignalToCommunicationWithServer(int signal);
+	Signal getSignalToCommunicationWithServer();
+	void setSignalToCommunicationWithServer(Signal signal);
 	
 	LocalDateTime getTimeConnection();
 	void setTimeConnection(LocalDateTime timeConnection);
