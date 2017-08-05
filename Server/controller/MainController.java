@@ -20,6 +20,8 @@ public class MainController implements Initializable{
 
 	@FXML private TableView<Client> clientsTableView;
 	@FXML private TableColumn<Client, Integer> identyfierColumn;
+	@FXML private TableColumn<Client, Boolean> authorizationColumn;
+	@FXML private TableColumn<Client, Integer> signalColumn;
 	@FXML private TableColumn<Client, LocalDateTime> timeConnectionColumn;
 	@FXML private Button connectionBtn;
 	@FXML private Text statusTxt;
@@ -34,6 +36,8 @@ public class MainController implements Initializable{
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		identyfierColumn.setCellValueFactory(new PropertyValueFactory<Client, Integer>("clientNumber"));
+		authorizationColumn.setCellValueFactory(new PropertyValueFactory<Client, Boolean>("authorized"));
+		signalColumn.setCellValueFactory(new PropertyValueFactory<Client, Integer>("signalToCommunicationWithServer"));
 		timeConnectionColumn.setCellValueFactory(new PropertyValueFactory<Client, LocalDateTime>("timeConnection"));
 	}
 	

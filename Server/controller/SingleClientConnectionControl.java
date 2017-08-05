@@ -36,10 +36,19 @@ public class SingleClientConnectionControl extends Thread {
 		createInputOutputStream();
 		while(main.getServerDate().isServerOnline() & clientData.isConnected()) {
 			readDataFromClient();
-			checkAuthorization();
-			checkClientStatuse();
+			checkClientStatus();
 			sendDataToClient();
 			log.warning("_____________________________________________________________________");
+		}
+	}
+	
+	private void createInputOutputStream() {
+		try {
+			incomeStream = new ObjectInputStream(clientSocket.getInputStream());
+			outcomeStream = new ObjectOutputStream(clientSocket.getOutputStream());
+		} catch (IOException e) {
+			log.warning("Error while creating input stream");
+			e.printStackTrace();
 		}
 	}
 	
@@ -48,44 +57,10 @@ public class SingleClientConnectionControl extends Thread {
 		try {
 			clientDataToRead = (Client)incomeStream.readObject();
 			clientData.setClientData(clientDataToRead);
-			if(!clientData.isAuthorized() && clientData.getAuthorizationCode() == main.getServerDate().getAuthorizationCode())
-				main.getConnectedClients().add(clientData);
 			log.info("[S2]Received client: "+clientData.toString());
 		} catch (ClassNotFoundException | IOException e) {
 			closeConnection();
 			e.printStackTrace();
-		}
-	}
-	
-	private void checkAuthorization() {
-		if(clientData.isAuthorized() || clientData.getAuthorizationCode() == main.getServerDate().getAuthorizationCode())
-			clientData.setAuthorized();
-		else
-			clientData.setNotAuthorized();
-		log.info("check authorization: " + clientData.toString());
-	}
-	
-	private void checkClientStatuse() { //FIXME eliminate switch statement
-		switch(clientData.getSignalToCommunicationWithServer()) {
-		case 1:
-			log.warning("SIGNAL 1");
-			break;
-		case 2:
-			System.out.println("USUWAM Z LISTY");
-			main.getConnectedClients().remove(clientData);
-			clientData.setNotConnected();
-			clientData.setNotAuthorized();
-			break;
-		case 3:
-			log.warning("SIGNAL 3");
-			//TODO checkAuthorization()
-			break;
-		case 4:
-			log.warning("SIGNAL 4");
-			break;
-			default:
-				log.info("OTHER SIGNAL MESSAGE");
-				break;
 		}
 	}
 	
@@ -101,15 +76,55 @@ public class SingleClientConnectionControl extends Thread {
 			e.printStackTrace();
 		}
 	}
-
-	private void createInputOutputStream() {
-		try {
-			incomeStream = new ObjectInputStream(clientSocket.getInputStream());
-			outcomeStream = new ObjectOutputStream(clientSocket.getOutputStream());
-		} catch (IOException e) {
-			log.warning("Error while creating input stream");
-			e.printStackTrace();
+	
+	private void checkClientStatus() { //FIXME eliminate switch statement
+		switch(clientData.getSignalToCommunicationWithServer()) {
+		case 1:
+			log.warning("SIGNAL 1");
+			connectClient();
+			break;
+		case 2:
+			log.warning("SIGNAL 2");
+			disconnectClient();
+			break;
+		case 3:
+			log.warning("SIGNAL 3");
+			checkAuthorization();
+			break;
+		case 4:
+			log.warning("SIGNAL 4");
+			updateConnection();
+		default:
+			log.info("UNRECOGNIZED SINGLA MESSAGE");
+			break;
 		}
+	}
+
+	private void connectClient() {
+		if(!clientData.isAuthorized())
+			main.getConnectedClients().add(clientData);
+	}
+
+	private void disconnectClient() {
+		main.getConnectedClients().remove(clientData);
+		clientData.setNotConnected();
+		clientData.setNotAuthorized();
+	}
+	
+	private void checkAuthorization() {
+		if(clientData.getAuthorizationCode() == main.getServerDate().getAuthorizationCode()) {
+			clientData.setAuthorized();
+			int clientIndex = main.getConnectedClients().indexOf(clientData);
+			main.getConnectedClients().set(clientIndex, clientData);
+		} else {
+			clientData.setNotAuthorized();
+		}
+		log.info("check authorization: " + clientData.toString());
+	}
+	
+	
+	private void updateConnection() {
+		
 	}
 	
 	private void closeConnection() {
