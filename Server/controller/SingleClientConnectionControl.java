@@ -35,72 +35,14 @@ public class SingleClientConnectionControl extends Thread {
 	public void run() {
 		createInputOutputStream();
 		while(main.getServerDate().isServerOnline() & clientData.isConnected()) {
-			readDataFromClient();
-			checkAuthorization();
-			checkClientStatuses();
-			sendDataToClient();
 			log.warning("_____________________________________________________________________");
+			readDataFromClient();
+			checkClientStatus();
+			sendDataToClient();
 		}
+		log.warning("END OF SINGLE LOOP");
 	}
 	
-	private void readDataFromClient() {
-		Client clientDataToRead = new Client();
-		try {
-			clientDataToRead = (Client)incomeStream.readObject();
-			clientData.setClientData(clientDataToRead);
-			if(!clientData.isAuthorized() && clientData.getAuthorizationCode() == main.getServerDate().getAuthorizationCode())
-				main.getConnectedClients().add(clientData);
-			log.info("[S2]Received client: "+clientData.toString());
-		} catch (ClassNotFoundException | IOException e) {
-			closeConnection();
-			e.printStackTrace();
-		}
-	}
-	
-	private void checkAuthorization() {
-		if(clientData.isAuthorized() || clientData.getAuthorizationCode() == main.getServerDate().getAuthorizationCode())
-			clientData.setAuthorized();
-		else
-			clientData.setNotAuthorized();
-		log.info("check authorization: " + clientData.toString());
-	}
-	
-	private void checkClientStatuses() { //FIXME eliminate switch statement
-		switch(clientData.getSignalToCommunicationWithServer()) {
-		case 1:
-			log.warning("SIGNAL 1");
-			break;
-		case 2:
-			System.out.println("USUWAM Z LISTY");
-			main.getConnectedClients().remove(clientData);
-			clientData.setNotConnected();
-			clientData.setNotAuthorized();
-			break;
-		case 3:
-			log.warning("SIGNAL 3");
-			break;
-		case 4:
-			log.warning("SIGNAL 4");
-			break;
-			default:
-				log.info("OTHER SIGNAL MESSAGE");
-				break;
-		}
-	}
-	
-	private void sendDataToClient() {
-		Client clientDataToSend = new Client();
-		clientDataToSend.setClientData(clientData);
-		try {
-			outcomeStream.writeObject(clientDataToSend);
-			outcomeStream.flush();
-			log.info("[S2]Send client: "+clientDataToSend.toString());
-		} catch (IOException e) {
-			closeConnection();
-			e.printStackTrace();
-		}
-	}
-
 	private void createInputOutputStream() {
 		try {
 			incomeStream = new ObjectInputStream(clientSocket.getInputStream());
@@ -111,16 +53,100 @@ public class SingleClientConnectionControl extends Thread {
 		}
 	}
 	
-	private void closeConnection() {
+	private void readDataFromClient() {
+		Client clientDataToRead = new Client();
 		try {
-			clientSocket.close();
+			clientDataToRead = (Client)incomeStream.readObject();
+			clientData.setClientData(clientDataToRead);
+			log.info("[S2]Received client: "+clientData.toString());
+		} catch (ClassNotFoundException | IOException e) {
+			closeConnection();
+			e.printStackTrace();
+		}
+	}
+	
+	private void sendDataToClient() {
+		Client clientDataToSend = new Client();
+		if(!main.getServerDate().isServerOnline()) {
+			clientData.setNotConnected();
+			System.out.println("SET NOE CONNECTED");
+			}
+		clientDataToSend.setClientData(clientData);
+		try {
+			outcomeStream.writeObject(clientDataToSend);
+			outcomeStream.flush();
+			log.info("[S2]Send client: "+clientDataToSend.toString());
+		} catch (IOException e) {
+			closeConnection();
+			e.printStackTrace();
+		}
+	}
+	
+	private void checkClientStatus() { //FIXME eliminate switch statement
+		switch(clientData.getSignalToCommunicationWithServer()) {
+		case NONE:
+			log.warning("SIGNAL NONE");
+			break;
+		case CONNECT:
+			log.warning("SIGNAL 1");
+			connectClient();
+			break;
+		case DISCONNECT:
+			log.warning("SIGNAL 2");
+			disconnectClient();
+			break;
+		case AUTHORIZE:
+			log.warning("SIGNAL 3");
+			checkAuthorization();
+			break;
+		case UPDATE:
+			log.warning("SIGNAL 4");
+			updateConnection();
+			break;
+		default:
+			log.info("UNRECOGNIZED SIGNAL MESSAGE");
+			break;
+		}
+	}
+
+	private void connectClient() {
+		if(!clientData.isAuthorized())
+			main.getConnectedClients().add(clientData);
+	}
+
+	private void disconnectClient() {
+		main.getConnectedClients().remove(clientData);
+		clientData.setNotConnected();
+		clientData.setNotAuthorized();
+	}
+	
+	private void checkAuthorization() {
+		if(clientData.getAuthorizationCode() == main.getServerDate().getAuthorizationCode())
+			clientData.setAuthorized();
+		else
+			clientData.setNotAuthorized();
+		updateClientDataInTable();
+		log.info("check authorization: " + clientData.toString());
+	}
+	
+	private void updateConnection() {
+		updateClientDataInTable();
+	}
+
+	private void updateClientDataInTable() {
+		int clientIndex = main.getConnectedClients().indexOf(clientData);
+		main.getConnectedClients().set(clientIndex, clientData);
+	}
+	
+	public void closeConnection() {
+		try {
 			incomeStream.close();
 			outcomeStream.close();
-//			Thread.currentThread().interrupt();
+			clientSocket.close();
 		} catch (IOException e) {
 			log.warning("Error while close connection");
 			e.printStackTrace();
 		}
 	}
-
+	
 }

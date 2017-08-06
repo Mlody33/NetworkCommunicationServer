@@ -6,8 +6,9 @@ import java.net.Socket;
 import java.util.logging.Logger;
 
 import application.ServerMain;
+import application.ServerStatuses;
 
-public class AcceptanceOfClientsConnection extends Thread {
+public class AcceptanceOfClientsConnection extends Thread { //TODO implements Runnable instead extend Thread
 	
 	private Logger log = Logger.getLogger("Server "+this.getClass().getName());
 	private ServerSocket serverSocket;
@@ -43,7 +44,6 @@ public class AcceptanceOfClientsConnection extends Thread {
 			return true;
 		} catch (IOException e) {
 			log.warning("Error while accepting connection");
-			closeConnection();
 			e.printStackTrace();
 			return false;
 		}
@@ -51,17 +51,19 @@ public class AcceptanceOfClientsConnection extends Thread {
 	
 	private void forwardClientConnectionToNewThread() {
 		SingleClientConnectionControl singleClientConnectionControl = new SingleClientConnectionControl(clientSocket);
+		singleClientConnectionControl.setName(ServerStatuses.CONNECTION_THREAD.get());
 		singleClientConnectionControl.setClientStatusConnected();
-		singleClientConnectionControl.start();
 		singleClientConnectionControl.setMain(main);
+		singleClientConnectionControl.start();
 	}
 
 	public void closeConnection() {
 		try {
 			serverSocket.close();
-			clientSocket.close();
 		} catch (IOException e) {
 			log.warning("Error while close connection");
 		}
 	}
+	
+	
 }
