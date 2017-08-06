@@ -26,6 +26,7 @@ public class ServerController implements Initializable{
 	@FXML private TableColumn<Client, LocalDateTime> timeConnectionColumn;
 	@FXML private Button connectionBtn;
 	@FXML private Text statusTxt;
+	@FXML private Text authorizationCodeTxt;
 	
 	private AcceptanceOfClientsConnection acceptanceOfClientsConnection;
 	private ServerMain main;
@@ -43,7 +44,7 @@ public class ServerController implements Initializable{
 	}
 	
 	public void setTable() {
-		clientsTableView.setItems(main.getConnectedClients());
+		clientsTableView.setItems(main.getServerDate().getConnectedClients());
 	}
 	
 	public void setConnection() throws IOException, InterruptedException {
@@ -68,7 +69,7 @@ public class ServerController implements Initializable{
 	}
 
 	public void setServerOffline() {
-		if(main.getConnectedClients().isEmpty()) {
+		if(main.getServerDate().getConnectedClients().isEmpty()) {
 			main.getServerDate().setServerStatusOffline();
 			setServerUIStatusOffline();
 			acceptanceOfClientsConnection.closeConnection();
@@ -81,7 +82,8 @@ public class ServerController implements Initializable{
 	private void setServerUIStatusOnline() {
 		main.getServerDate().setServerStatusOnline();
 		statusTxt.setFill(Color.BLACK);
-		statusTxt.setText(ServerStatuses.ONLINE.get() + " " + main.getServerDate().getAuthorizationCode());
+		statusTxt.setText(ServerStatuses.ONLINE.get());
+		authorizationCodeTxt.setText(String.valueOf(main.getServerDate().getAuthorizationCode()));
 		connectionBtn.setText(ServerStatuses.SET_SERVER_OFFLINE.get());
 	}
 

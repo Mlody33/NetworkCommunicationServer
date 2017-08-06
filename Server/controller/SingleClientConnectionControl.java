@@ -35,12 +35,10 @@ public class SingleClientConnectionControl extends Thread {
 	public void run() {
 		createInputOutputStream();
 		while(main.getServerDate().isServerOnline() & clientData.isConnected()) {
-			log.warning("_____________________________________________________________________");
 			readDataFromClient();
 			checkClientStatus();
 			sendDataToClient();
 		}
-		log.warning("END OF SINGLE LOOP");
 	}
 	
 	private void createInputOutputStream() {
@@ -48,8 +46,7 @@ public class SingleClientConnectionControl extends Thread {
 			incomeStream = new ObjectInputStream(clientSocket.getInputStream());
 			outcomeStream = new ObjectOutputStream(clientSocket.getOutputStream());
 		} catch (IOException e) {
-			log.warning("Error while creating input stream");
-			e.printStackTrace();
+			log.warning("Can't create stream");
 		}
 	}
 	
@@ -58,64 +55,51 @@ public class SingleClientConnectionControl extends Thread {
 		try {
 			clientDataToRead = (Client)incomeStream.readObject();
 			clientData.setClientData(clientDataToRead);
-			log.info("[S2]Received client: "+clientData.toString());
 		} catch (ClassNotFoundException | IOException e) {
 			closeConnection();
-			e.printStackTrace();
 		}
 	}
 	
 	private void sendDataToClient() {
 		Client clientDataToSend = new Client();
-		if(!main.getServerDate().isServerOnline()) {
+		if(!main.getServerDate().isServerOnline())
 			clientData.setNotConnected();
-			System.out.println("SET NOE CONNECTED");
-			}
 		clientDataToSend.setClientData(clientData);
 		try {
 			outcomeStream.writeObject(clientDataToSend);
 			outcomeStream.flush();
-			log.info("[S2]Send client: "+clientDataToSend.toString());
 		} catch (IOException e) {
 			closeConnection();
-			e.printStackTrace();
 		}
 	}
 	
 	private void checkClientStatus() { //FIXME eliminate switch statement
 		switch(clientData.getSignalToCommunicationWithServer()) {
-		case NONE:
-			log.warning("SIGNAL NONE");
-			break;
 		case CONNECT:
-			log.warning("SIGNAL 1");
 			connectClient();
 			break;
 		case DISCONNECT:
-			log.warning("SIGNAL 2");
 			disconnectClient();
 			break;
 		case AUTHORIZE:
-			log.warning("SIGNAL 3");
 			checkAuthorization();
 			break;
 		case UPDATE:
-			log.warning("SIGNAL 4");
 			updateConnection();
 			break;
 		default:
-			log.info("UNRECOGNIZED SIGNAL MESSAGE");
+			closeConnection();
 			break;
 		}
 	}
 
 	private void connectClient() {
 		if(!clientData.isAuthorized())
-			main.getConnectedClients().add(clientData);
+			main.getServerDate().getConnectedClients().add(clientData);
 	}
 
 	private void disconnectClient() {
-		main.getConnectedClients().remove(clientData);
+		main.getServerDate().getConnectedClients().remove(clientData);
 		clientData.setNotConnected();
 		clientData.setNotAuthorized();
 	}
@@ -126,7 +110,6 @@ public class SingleClientConnectionControl extends Thread {
 		else
 			clientData.setNotAuthorized();
 		updateClientDataInTable();
-		log.info("check authorization: " + clientData.toString());
 	}
 	
 	private void updateConnection() {
@@ -134,8 +117,8 @@ public class SingleClientConnectionControl extends Thread {
 	}
 
 	private void updateClientDataInTable() {
-		int clientIndex = main.getConnectedClients().indexOf(clientData);
-		main.getConnectedClients().set(clientIndex, clientData);
+		int clientIndex = main.getServerDate().getConnectedClients().indexOf(clientData);
+		main.getServerDate().getConnectedClients().set(clientIndex, clientData);
 	}
 	
 	public void closeConnection() {
@@ -144,8 +127,7 @@ public class SingleClientConnectionControl extends Thread {
 			outcomeStream.close();
 			clientSocket.close();
 		} catch (IOException e) {
-			log.warning("Error while close connection");
-			e.printStackTrace();
+			log.warning("Can't close connection with client");
 		}
 	}
 	

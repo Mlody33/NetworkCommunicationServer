@@ -2,10 +2,13 @@ package model;
 
 import java.util.Random;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+
 public class Server {
 	private int AUTHORIZATION_CODE;
 	private boolean serverStatus;
-	//TODO Move here list of connected client
+	private ObservableList<Client> connectedClients = FXCollections.observableArrayList();
 
 	public Server() {
 		AUTHORIZATION_CODE = new Random().nextInt(8999)+1000;
@@ -30,6 +33,10 @@ public class Server {
 	
 	public int getAuthorizationCode() {
 		return this.AUTHORIZATION_CODE;
+	}
+	
+	public ObservableList<Client> getConnectedClients() {
+		return this.connectedClients;
 	}
 	
 }

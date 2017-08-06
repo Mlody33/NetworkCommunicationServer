@@ -26,15 +26,13 @@ public class AcceptanceOfClientsConnection extends Thread { //TODO implements Ru
 			if(acceptClientSocket())
 				forwardClientConnectionToNewThread();
 		}
-		log.warning("OUT OF LOOP");
 	}
 
 	private void createServerSocket() {
 		try {
 			serverSocket = new ServerSocket(5588);
 		} catch (IOException e) {
-			log.warning("Error while creating socket");
-			e.printStackTrace();
+			log.warning("Can't create server socket");
 		}
 	}
 	
@@ -43,8 +41,7 @@ public class AcceptanceOfClientsConnection extends Thread { //TODO implements Ru
 			clientSocket = serverSocket.accept();
 			return true;
 		} catch (IOException e) {
-			log.warning("Error while accepting connection");
-			e.printStackTrace();
+			log.warning("Can't accept connection");
 			return false;
 		}
 	}
@@ -61,7 +58,7 @@ public class AcceptanceOfClientsConnection extends Thread { //TODO implements Ru
 		try {
 			serverSocket.close();
 		} catch (IOException e) {
-			log.warning("Error while close connection");
+			log.warning("Can't close connection");
 		}
 	}
 	
