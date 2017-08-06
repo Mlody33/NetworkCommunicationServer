@@ -9,7 +9,7 @@ import java.util.logging.Logger;
 import application.ServerMain;
 import model.Client;
 
-public class SingleClientConnectionControl extends Thread {
+public class SingleClientConnectionControl implements Runnable {
 	
 	private Logger log = Logger.getLogger("Server"+this.getClass().getName());
 	private Socket clientSocket;

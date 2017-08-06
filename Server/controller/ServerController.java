@@ -50,9 +50,10 @@ public class ServerController implements Initializable{
 	public void setConnection() throws IOException, InterruptedException {
 		setServerUIStatusOnline();
 		acceptanceOfClientsConnection = new AcceptanceOfClientsConnection();
-		acceptanceOfClientsConnection.setName(ServerStatuses.ACCEPTANCE_THREAD.get());
+		Thread acceptanceThread = new Thread(acceptanceOfClientsConnection);
 		acceptanceOfClientsConnection.setMain(main);
-		acceptanceOfClientsConnection.start();
+		acceptanceThread.setName(ServerStatuses.ACCEPTANCE_THREAD.get());
+		acceptanceThread.start();
 	}
 
 	@FXML public void switchServerConnection() throws IOException, InterruptedException {

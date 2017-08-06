@@ -8,7 +8,7 @@ import java.util.logging.Logger;
 import application.ServerMain;
 import application.ServerStatuses;
 
-public class AcceptanceOfClientsConnection extends Thread { //TODO implements Runnable instead extend Thread
+public class AcceptanceOfClientsConnection implements Runnable{
 	
 	private Logger log = Logger.getLogger("Server "+this.getClass().getName());
 	private ServerSocket serverSocket;
@@ -48,10 +48,11 @@ public class AcceptanceOfClientsConnection extends Thread { //TODO implements Ru
 	
 	private void forwardClientConnectionToNewThread() {
 		SingleClientConnectionControl singleClientConnectionControl = new SingleClientConnectionControl(clientSocket);
-		singleClientConnectionControl.setName(ServerStatuses.CONNECTION_THREAD.get());
+		Thread singleConnectionThread = new Thread(singleClientConnectionControl);
 		singleClientConnectionControl.setClientStatusConnected();
 		singleClientConnectionControl.setMain(main);
-		singleClientConnectionControl.start();
+		singleConnectionThread.setName(ServerStatuses.CONNECTION_THREAD.get());
+		singleConnectionThread.start();
 	}
 
 	public void closeConnection() {
