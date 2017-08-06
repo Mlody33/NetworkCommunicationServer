@@ -17,7 +17,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import model.Client;
 
-public class ServerController implements Initializable{
+public class ServerController implements Initializable {
 
 	@FXML private TableView<Client> clientsTableView;
 	@FXML private TableColumn<Client, Integer> identyfierColumn;
@@ -93,6 +93,26 @@ public class ServerController implements Initializable{
 		statusTxt.setFill(Color.BLACK);
 		statusTxt.setText(ServerStatuses.OFFLINE.get());
 		connectionBtn.setText(ServerStatuses.SET_SERVER_ONLINE.get());
+	}
+	
+	public void setUINewClientConnection() {
+		statusTxt.setFill(Color.BLACK);
+		statusTxt.setText(ServerStatuses.NEW_CONNECTION.get());
+	}
+	
+	public void setUINewClientDisconnection() {
+		statusTxt.setFill(Color.BLACK);
+		statusTxt.setText(ServerStatuses.NEW_DISCONNECTION.get());
+	}
+	
+	public void setUINewClientAuthorization() {
+		statusTxt.setFill(Color.BLACK);
+		statusTxt.setText(ServerStatuses.NEW_AUTHORIZATION.get());
+	}
+	
+	public void setUINewClientUpdate() {
+		statusTxt.setFill(Color.BLACK);
+		statusTxt.setText(ServerStatuses.NEW_UPDATE.get());
 	}
 	
 	public void setImmediatelyServerOffline() {

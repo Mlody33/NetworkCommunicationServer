@@ -94,26 +94,31 @@ public class SingleClientConnectionControl implements Runnable {
 	}
 
 	private void connectClient() {
-		if(!clientData.isAuthorized())
+		if(!clientData.isAuthorized()) {
 			main.getServerDate().getConnectedClients().add(clientData);
+			main.getServerController().setUINewClientConnection();
+		}
 	}
 
 	private void disconnectClient() {
 		main.getServerDate().getConnectedClients().remove(clientData);
+		main.getServerController().setUINewClientDisconnection();
 		clientData.setNotConnected();
 		clientData.setNotAuthorized();
 	}
 	
 	private void checkAuthorization() {
-		if(clientData.getAuthorizationCode() == main.getServerDate().getAuthorizationCode())
+		if(clientData.getAuthorizationCode() == main.getServerDate().getAuthorizationCode()) {
 			clientData.setAuthorized();
-		else
+			main.getServerController().setUINewClientAuthorization();
+		} else
 			clientData.setNotAuthorized();
 		updateClientDataInTable();
 	}
 	
 	private void updateConnection() {
 		updateClientDataInTable();
+		main.getServerController().setUINewClientUpdate();
 	}
 
 	private void updateClientDataInTable() {

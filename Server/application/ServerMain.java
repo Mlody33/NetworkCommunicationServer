@@ -62,4 +62,8 @@ public class ServerMain extends Application {
 		return this.serverDate;
 	}
 	
+	public ServerController getServerController() {
+		return this.controller;
+	}
+	
 }
