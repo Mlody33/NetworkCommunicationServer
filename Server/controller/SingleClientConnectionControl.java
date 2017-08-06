@@ -35,11 +35,12 @@ public class SingleClientConnectionControl extends Thread {
 	public void run() {
 		createInputOutputStream();
 		while(main.getServerDate().isServerOnline() & clientData.isConnected()) {
+			log.warning("_____________________________________________________________________");
 			readDataFromClient();
 			checkClientStatus();
 			sendDataToClient();
-			log.warning("_____________________________________________________________________");
 		}
+		log.warning("END OF SINGLE LOOP");
 	}
 	
 	private void createInputOutputStream() {
@@ -66,6 +67,10 @@ public class SingleClientConnectionControl extends Thread {
 	
 	private void sendDataToClient() {
 		Client clientDataToSend = new Client();
+		if(!main.getServerDate().isServerOnline()) {
+			clientData.setNotConnected();
+			System.out.println("SET NOE CONNECTED");
+			}
 		clientDataToSend.setClientData(clientData);
 		try {
 			outcomeStream.writeObject(clientDataToSend);
@@ -79,6 +84,9 @@ public class SingleClientConnectionControl extends Thread {
 	
 	private void checkClientStatus() { //FIXME eliminate switch statement
 		switch(clientData.getSignalToCommunicationWithServer()) {
+		case NONE:
+			log.warning("SIGNAL NONE");
+			break;
 		case CONNECT:
 			log.warning("SIGNAL 1");
 			connectClient();
@@ -94,8 +102,9 @@ public class SingleClientConnectionControl extends Thread {
 		case UPDATE:
 			log.warning("SIGNAL 4");
 			updateConnection();
+			break;
 		default:
-			log.info("UNRECOGNIZED SINGLA MESSAGE");
+			log.info("UNRECOGNIZED SIGNAL MESSAGE");
 			break;
 		}
 	}
@@ -112,15 +121,13 @@ public class SingleClientConnectionControl extends Thread {
 	}
 	
 	private void checkAuthorization() {
-		if(clientData.getAuthorizationCode() == main.getServerDate().getAuthorizationCode()) {
+		if(clientData.getAuthorizationCode() == main.getServerDate().getAuthorizationCode())
 			clientData.setAuthorized();
-			updateClientDataInTable();
-		} else {
+		else
 			clientData.setNotAuthorized();
-		}
+		updateClientDataInTable();
 		log.info("check authorization: " + clientData.toString());
 	}
-	
 	
 	private void updateConnection() {
 		updateClientDataInTable();
@@ -131,15 +138,15 @@ public class SingleClientConnectionControl extends Thread {
 		main.getConnectedClients().set(clientIndex, clientData);
 	}
 	
-	private void closeConnection() {
+	public void closeConnection() {
 		try {
-			clientSocket.close();
 			incomeStream.close();
 			outcomeStream.close();
+			clientSocket.close();
 		} catch (IOException e) {
 			log.warning("Error while close connection");
 			e.printStackTrace();
 		}
 	}
-
+	
 }

@@ -2,14 +2,16 @@ package application;
 	
 import java.io.IOException;
 
-import controller.MainController;
+import controller.ServerController;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import model.Client;
 import model.Server;
 
@@ -21,6 +23,7 @@ public class ServerMain extends Application {
 	
 	private Server serverDate = new Server();
 	private ObservableList<Client> connectedClients = FXCollections.observableArrayList();
+	private ServerController controller;
 
 	@Override
 	public void start(Stage primaryStage) {
@@ -43,7 +46,7 @@ public class ServerMain extends Application {
 		loader.setLocation(ServerMain.class.getResource("../view/ServerView.fxml"));
 		rootLayout = (BorderPane)loader.load();
 		
-		MainController controller = loader.getController();
+		controller = loader.getController();
 		controller.setMain(this);
 		controller.setTable();
 		controller.setConnection();
@@ -51,8 +54,14 @@ public class ServerMain extends Application {
 		Scene scene = new Scene(rootLayout);
 		scene.getStylesheets().add(ServerMain.class.getResource("../view/style.css").toExternalForm());
 		primaryStage.setScene(scene);
-		primaryStage.setTitle(StatusTextDB.TITLE_OF_APP.get());
+		primaryStage.setTitle(ServerStatuses.SERVER_TITLE.get());
 		primaryStage.show();
+		primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+			@Override
+			public void handle(WindowEvent arg0) {
+				controller.setImmediatelyServerOffline();
+			}
+		});
 	}
 
 	public ObservableList<Client> getConnectedClients() {
@@ -62,4 +71,5 @@ public class ServerMain extends Application {
 	public Server getServerDate() {
 		return this.serverDate;
 	}
+	
 }

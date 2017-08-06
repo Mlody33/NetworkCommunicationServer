@@ -28,7 +28,7 @@ public class Client implements ClientTemplate, Externalizable {
 		this.authorizationCode = new SimpleIntegerProperty(0);
 		this.authorized = new SimpleBooleanProperty(false);
 		this.signalToCommunicationWithServer = new SimpleObjectProperty<Signal>(Signal.NONE);
-		this.timeConnection = new SimpleObjectProperty<LocalDateTime>(LocalDateTime.now());
+		this.timeConnection = new SimpleObjectProperty<LocalDateTime>(LocalDateTime.now().withNano(0));
 	}
 	
 	public Client (int clientNumber, boolean connected, int authorizationCode, boolean authorized, LocalDateTime timeConnection) {
@@ -37,7 +37,7 @@ public class Client implements ClientTemplate, Externalizable {
 		this.authorizationCode = new SimpleIntegerProperty(authorizationCode);
 		this.authorized = new SimpleBooleanProperty(authorized);
 		this.signalToCommunicationWithServer = new SimpleObjectProperty<Signal>(Signal.NONE);
-		this.timeConnection = new SimpleObjectProperty<LocalDateTime>(timeConnection);
+		this.timeConnection = new SimpleObjectProperty<LocalDateTime>(timeConnection.withNano(0));
 	}
 	
 	public void setClientData(Client client) {
@@ -111,12 +111,12 @@ public class Client implements ClientTemplate, Externalizable {
 
 	@Override
 	public LocalDateTime getTimeConnection() {
-		return this.timeConnection.get();
+		return this.timeConnection.get().withNano(0);
 	}
 
 	@Override
 	public void setTimeConnection(LocalDateTime timeConnection) {
-		this.timeConnection = new SimpleObjectProperty<LocalDateTime>(timeConnection);
+		this.timeConnection = new SimpleObjectProperty<LocalDateTime>(timeConnection.withNano(0));
 	}
 	
 	@Override

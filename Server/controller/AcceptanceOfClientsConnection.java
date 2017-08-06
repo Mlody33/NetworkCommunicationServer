@@ -6,6 +6,7 @@ import java.net.Socket;
 import java.util.logging.Logger;
 
 import application.ServerMain;
+import application.ServerStatuses;
 
 public class AcceptanceOfClientsConnection extends Thread { //TODO implements Runnable instead extend Thread
 	
@@ -50,6 +51,7 @@ public class AcceptanceOfClientsConnection extends Thread { //TODO implements Ru
 	
 	private void forwardClientConnectionToNewThread() {
 		SingleClientConnectionControl singleClientConnectionControl = new SingleClientConnectionControl(clientSocket);
+		singleClientConnectionControl.setName(ServerStatuses.CONNECTION_THREAD.get());
 		singleClientConnectionControl.setClientStatusConnected();
 		singleClientConnectionControl.setMain(main);
 		singleClientConnectionControl.start();
@@ -62,4 +64,6 @@ public class AcceptanceOfClientsConnection extends Thread { //TODO implements Ru
 			log.warning("Error while close connection");
 		}
 	}
+	
+	
 }
