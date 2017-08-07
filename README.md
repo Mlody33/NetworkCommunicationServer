@@ -4,4 +4,4 @@ This is a server application. That app expecting clients to connect. Once connec
 
 The received command from the client is processed on the server side and the modified data is returned to the client.
 
-**App is still in beta, but mostly work well.**
+>**_App is still in beta, but mostly work well._**
