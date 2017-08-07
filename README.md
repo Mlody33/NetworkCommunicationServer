@@ -1,6 +1,6 @@
 # Network Comunication Server
 
-_That application was created to improve my skills in programing using_ **OOP, GIT, Clean Code**
+_That application was created to improve my skills in programing using i.a._ **OOP, GIT, Clean Code**
 
 This is a server application. That app expecting clients to connect. Once connected, server have the ability to communicate with clients via TCP on port 5588.
 
