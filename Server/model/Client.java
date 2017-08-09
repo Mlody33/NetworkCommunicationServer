@@ -6,11 +6,12 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.time.LocalDateTime;
 
-import controller.Signal;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import signals.NoneSignal;
+import signals.Signal;
 
 public class Client implements ClientTemplate, Externalizable {
 
@@ -27,7 +28,7 @@ public class Client implements ClientTemplate, Externalizable {
 		this.connected = new SimpleBooleanProperty(false);
 		this.authorizationCode = new SimpleIntegerProperty(0);
 		this.authorized = new SimpleBooleanProperty(false);
-		this.signalToCommunicationWithServer = new SimpleObjectProperty<Signal>(Signal.NONE);
+		this.signalToCommunicationWithServer = new SimpleObjectProperty<Signal>(new NoneSignal());
 		this.timeConnection = new SimpleObjectProperty<LocalDateTime>(LocalDateTime.now().withNano(0));
 	}
 	
@@ -36,7 +37,7 @@ public class Client implements ClientTemplate, Externalizable {
 		this.connected = new SimpleBooleanProperty(connected);
 		this.authorizationCode = new SimpleIntegerProperty(authorizationCode);
 		this.authorized = new SimpleBooleanProperty(authorized);
-		this.signalToCommunicationWithServer = new SimpleObjectProperty<Signal>(Signal.NONE);
+		this.signalToCommunicationWithServer = new SimpleObjectProperty<Signal>(new NoneSignal());
 		this.timeConnection = new SimpleObjectProperty<LocalDateTime>(timeConnection.withNano(0));
 	}
 	

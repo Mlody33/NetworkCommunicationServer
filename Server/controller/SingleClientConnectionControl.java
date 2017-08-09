@@ -74,23 +74,24 @@ public class SingleClientConnectionControl implements Runnable {
 	}
 	
 	private void checkClientStatus() { //FIXME eliminate switch statement
-		switch(clientData.getSignalToCommunicationWithServer()) {
-		case CONNECT:
-			connectClient();
-			break;
-		case DISCONNECT:
-			disconnectClient();
-			break;
-		case AUTHORIZE:
-			checkAuthorization();
-			break;
-		case UPDATE:
-			updateConnection();
-			break;
-		default:
-			closeConnection();
-			break;
-		}
+		clientData.getSignalToCommunicationWithServer().performSignal();
+//		switch(clientData.getSignalToCommunicationWithServer()) {
+//		case CONNECT:
+//			connectClient();
+//			break;
+//		case DISCONNECT:
+//			disconnectClient();
+//			break;
+//		case AUTHORIZE:
+//			checkAuthorization();
+//			break;
+//		case UPDATE:
+//			updateConnection();
+//			break;
+//		default:
+//			closeConnection();
+//			break;
+//		}
 	}
 
 	private void connectClient() {

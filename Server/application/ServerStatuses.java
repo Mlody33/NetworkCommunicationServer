@@ -12,7 +12,7 @@ public enum ServerStatuses {
 	NEW_CONNECTION("New client connected"),
 	NEW_AUTHORIZATION("Client authorized"),
 	NEW_DISCONNECTION("Client disconnected"),
-	NEW_UPDATE("Client update own status");
+	NEW_UPDATE("Client updated own status");
 	
 	private String statusText;
 	

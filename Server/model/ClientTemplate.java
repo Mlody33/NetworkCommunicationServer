@@ -3,7 +3,7 @@ package model;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-import controller.Signal;
+import signals.Signal;
 
 public interface ClientTemplate extends Serializable {
 	
