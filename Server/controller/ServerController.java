@@ -17,7 +17,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import model.Client;
 
-public class ServerController implements Initializable{
+public class ServerController implements Initializable {
 
 	@FXML private TableView<Client> clientsTableView;
 	@FXML private TableColumn<Client, Integer> identyfierColumn;
@@ -26,6 +26,7 @@ public class ServerController implements Initializable{
 	@FXML private TableColumn<Client, LocalDateTime> timeConnectionColumn;
 	@FXML private Button connectionBtn;
 	@FXML private Text statusTxt;
+	@FXML private Text authorizationCodeTxt;
 	
 	private AcceptanceOfClientsConnection acceptanceOfClientsConnection;
 	private ServerMain main;
@@ -43,15 +44,16 @@ public class ServerController implements Initializable{
 	}
 	
 	public void setTable() {
-		clientsTableView.setItems(main.getConnectedClients());
+		clientsTableView.setItems(main.getServerDate().getConnectedClients());
 	}
 	
 	public void setConnection() throws IOException, InterruptedException {
 		setServerUIStatusOnline();
 		acceptanceOfClientsConnection = new AcceptanceOfClientsConnection();
-		acceptanceOfClientsConnection.setName(ServerStatuses.ACCEPTANCE_THREAD.get());
+		Thread acceptanceThread = new Thread(acceptanceOfClientsConnection);
 		acceptanceOfClientsConnection.setMain(main);
-		acceptanceOfClientsConnection.start();
+		acceptanceThread.setName(ServerStatuses.ACCEPTANCE_THREAD.get());
+		acceptanceThread.start();
 	}
 
 	@FXML public void switchServerConnection() throws IOException, InterruptedException {
@@ -68,7 +70,7 @@ public class ServerController implements Initializable{
 	}
 
 	public void setServerOffline() {
-		if(main.getConnectedClients().isEmpty()) {
+		if(main.getServerDate().getConnectedClients().isEmpty()) {
 			main.getServerDate().setServerStatusOffline();
 			setServerUIStatusOffline();
 			acceptanceOfClientsConnection.closeConnection();
@@ -81,7 +83,8 @@ public class ServerController implements Initializable{
 	private void setServerUIStatusOnline() {
 		main.getServerDate().setServerStatusOnline();
 		statusTxt.setFill(Color.BLACK);
-		statusTxt.setText(ServerStatuses.ONLINE.get() + " " + main.getServerDate().getAuthorizationCode());
+		statusTxt.setText(ServerStatuses.ONLINE.get());
+		authorizationCodeTxt.setText(String.valueOf(main.getServerDate().getAuthorizationCode()));
 		connectionBtn.setText(ServerStatuses.SET_SERVER_OFFLINE.get());
 	}
 
@@ -90,6 +93,26 @@ public class ServerController implements Initializable{
 		statusTxt.setFill(Color.BLACK);
 		statusTxt.setText(ServerStatuses.OFFLINE.get());
 		connectionBtn.setText(ServerStatuses.SET_SERVER_ONLINE.get());
+	}
+	
+	public void setUINewClientConnection() {
+		statusTxt.setFill(Color.BLACK);
+		statusTxt.setText(ServerStatuses.NEW_CONNECTION.get());
+	}
+	
+	public void setUINewClientDisconnection() {
+		statusTxt.setFill(Color.BLACK);
+		statusTxt.setText(ServerStatuses.NEW_DISCONNECTION.get());
+	}
+	
+	public void setUINewClientAuthorization() {
+		statusTxt.setFill(Color.BLACK);
+		statusTxt.setText(ServerStatuses.NEW_AUTHORIZATION.get());
+	}
+	
+	public void setUINewClientUpdate() {
+		statusTxt.setFill(Color.BLACK);
+		statusTxt.setText(ServerStatuses.NEW_UPDATE.get());
 	}
 	
 	public void setImmediatelyServerOffline() {

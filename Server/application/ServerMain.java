@@ -1,20 +1,15 @@
 package application;
 	
 import java.io.IOException;
-
 import controller.ServerController;
 import javafx.application.Application;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import model.Client;
 import model.Server;
-
 
 public class ServerMain extends Application {
 	
@@ -22,7 +17,6 @@ public class ServerMain extends Application {
 	private BorderPane rootLayout;
 	
 	private Server serverDate = new Server();
-	private ObservableList<Client> connectedClients = FXCollections.observableArrayList();
 	private ServerController controller;
 
 	@Override
@@ -64,12 +58,12 @@ public class ServerMain extends Application {
 		});
 	}
 
-	public ObservableList<Client> getConnectedClients() {
-		return connectedClients;
-	}
-	
 	public Server getServerDate() {
 		return this.serverDate;
+	}
+	
+	public ServerController getServerController() {
+		return this.controller;
 	}
 	
 }
