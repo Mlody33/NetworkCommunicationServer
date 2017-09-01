@@ -30,7 +30,7 @@
           <Button fx:id="connectionBtn" mnemonicParsing="false" onAction="#switchServerConnection" text="Switch to offline" />
             <Separator orientation="VERTICAL" prefHeight="200.0" />
             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Authorization code" wrappingWidth="103.13671875" />
-            <Text fx:id="authorizationCodeTxt" strokeType="OUTSIDE" strokeWidth="0.0" text="0000" wrappingWidth="34.13671875" />
+            <Text fx:id="authorizationCodeTxt" strokeType="OUTSIDE" strokeWidth="0.0" text="0000" wrappingWidth="37.13671875" />
             <Separator orientation="VERTICAL" prefHeight="200.0" />
             <Text fx:id="statusTxt" strokeType="OUTSIDE" strokeWidth="0.0" text="Online" textAlignment="CENTER" wrappingWidth="223.826171875" HBox.hgrow="ALWAYS">
                <font>
