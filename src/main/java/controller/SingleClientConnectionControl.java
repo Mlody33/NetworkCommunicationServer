@@ -73,7 +73,7 @@ public class SingleClientConnectionControl implements Runnable {
 		}
 	}
 	
-	private void checkClientStatus() { //FIXME eliminate switch statement
+	private void checkClientStatus() {
 		switch(clientData.getSignalToCommunicationWithServer()) {
 		case CONNECT:
 			connectClient();
