@@ -37,8 +37,8 @@ public class ServerMain extends Application {
 	
 	private void initMainView() throws IOException, InterruptedException {
 		FXMLLoader loader = new FXMLLoader();
-		loader.setLocation(ServerMain.class.getResource("../view/ServerView.fxml"));
-		rootLayout = (BorderPane)loader.load();
+		loader.setLocation(ServerMain.class.getResource("/view/ServerView.fxml"));
+		rootLayout = loader.load();
 		
 		controller = loader.getController();
 		controller.setMain(this);
@@ -46,16 +46,11 @@ public class ServerMain extends Application {
 		controller.setConnection();
 		
 		Scene scene = new Scene(rootLayout);
-		scene.getStylesheets().add(ServerMain.class.getResource("../view/style.css").toExternalForm());
+		scene.getStylesheets().add(ServerMain.class.getResource("/view/style.css").toExternalForm());
 		primaryStage.setScene(scene);
 		primaryStage.setTitle(ServerStatuses.SERVER_TITLE.get());
 		primaryStage.show();
-		primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-			@Override
-			public void handle(WindowEvent arg0) {
-				controller.setImmediatelyServerOffline();
-			}
-		});
+		primaryStage.setOnCloseRequest(arg0 -> controller.setImmediatelyServerOffline());
 	}
 
 	public Server getServerDate() {
